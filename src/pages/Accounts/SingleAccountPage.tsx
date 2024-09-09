@@ -4,24 +4,23 @@ import { Endpoints } from "../../api/Endpoints";
 import useApi from "../../shared/hooks/useApi";
 import AccountPageHeader from "./components/AccountPageHeader";
 import ShopsTable from "./components/ShopsTable";
+import { Account } from "./types/AccountInterfaces";
 
-const AccountPage = () => {
+const SingleAccountPage = () => {
 	const { accountId } = useParams();
-	const { isLoading, getItemById } = useApi(Endpoints.accounts());
-	const [account, setAccount] = useState({});
+	const { isLoading, getItemById } = useApi<Account>(Endpoints.accounts());
+	const [account, setAccount] = useState<Account | undefined>(undefined);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchAccount = async () => {
 			try {
-				const account = (await getItemById(Number(accountId))) as {
-					data: { items: object };
-				};
+				const account = await getItemById(Number(accountId));
 				if (!account) {
-					navigate(`${Endpoints.accounts()}`);
+					navigate(Endpoints.accounts());
 					throw new Error("Account not found");
 				}
-				setAccount(account.data.items);
+				setAccount(account.items[0]);
 			} catch (error) {
 				throw error;
 			}
@@ -44,4 +43,4 @@ const AccountPage = () => {
 	);
 };
 
-export default AccountPage;
+export default SingleAccountPage;

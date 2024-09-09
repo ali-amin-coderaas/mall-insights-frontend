@@ -1,20 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ApiService from "../../api/ApiService";
-
-type Data<T> = {
-	items: T[];
-	pagination: {
-		totalItems: number;
-		pageSize: number;
-		currentPage: number;
-		totalPages: number;
-	};
-	links: string | null;
-};
+import { ResponseData } from "../types/responseDataInterfaces";
 
 type UseApiReturn<T> = {
-	data: Data<T> | undefined;
+	data: ResponseData<T> | undefined;
 	isLoading: boolean;
 	error: Error | null;
 	totalItems: number;
@@ -23,7 +13,7 @@ type UseApiReturn<T> = {
 	searchQuery: string;
 	createItem: (data: T) => void;
 	updateItem: (id: number, data: T) => void;
-	getItemById: (id: number) => Promise<Data<T> | undefined>;
+	getItemById: (id: number) => Promise<ResponseData<T> | undefined>;
 	deleteItem: (id: number) => void;
 
 	setCurrentPage: (page: number) => void;
@@ -32,7 +22,7 @@ type UseApiReturn<T> = {
 };
 
 function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
-	const [data, setData] = useState<Data<T> | undefined>(undefined);
+	const [data, setData] = useState<ResponseData<T> | undefined>(undefined);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
 	const [totalItems, setTotalItems] = useState(0);
@@ -106,7 +96,7 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 	const getItemById = async (id: number) => {
 		setIsLoading(true);
 		try {
-			const response = await apiService.getById<Data<T>>(id);
+			const response = await apiService.getById<ResponseData<T>>(id);
 			return response.data;
 		} catch (error) {
 			setError(error as Error);

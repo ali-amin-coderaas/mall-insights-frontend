@@ -13,10 +13,11 @@ import { Account } from "../types/AccountInterfaces";
 
 interface AccountPageHeaderProps {
 	loading: boolean;
-	account: Account;
+	account: Account | undefined;
 	setAccount: any;
 	disabled?: boolean;
 	fields?: any;
+	[rest: string]: any;
 }
 
 const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
@@ -84,7 +85,10 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 		}
 	};
 
-	const handleInputChange = (e, field) => {
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLInputElement>,
+		field: string
+	) => {
 		setEditableAccount({
 			...editableAccount,
 			[field]: e.target.value,
@@ -114,7 +118,7 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 						<label htmlFor="account-name" className="text-sm font-regular">
 							Account name
 						</label>
-						<p className="font-bold m-0">{account.name}</p>
+						<p className="font-bold m-0">{account?.name}</p>
 					</div>
 				)}
 				{loading ? (
@@ -126,8 +130,8 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 						</label>
 						<div>
 							<Tag
-								value={account.accountType}
-								severity={getSeverity(account.accountType)}
+								value={account?.accountType}
+								// severity={getSeverity(account?.accountType)}
 							/>
 						</div>
 					</div>

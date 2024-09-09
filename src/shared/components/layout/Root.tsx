@@ -3,6 +3,7 @@ import { Button } from "primereact/button";
 import { Menubar } from "primereact/menubar";
 import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
+
 import SideBar from "./SideBar";
 
 const Root = () => {

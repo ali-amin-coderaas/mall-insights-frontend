@@ -1,8 +1,8 @@
-import { ColumnProps } from "primereact/column";
 import { Link } from "react-router-dom";
 import { Endpoints } from "../../../api/Endpoints";
 import DataTableComponent from "../../../shared/components/DataTableComponent";
 import DialogComponent from "../../../shared/components/DialogComponent";
+import { Column, Field } from "../../../shared/types/dataTableInterfaces";
 import { formatTimeStamp } from "../../../shared/utils/FormatTimeStamp";
 import { AccountId } from "../types/AccountInterfaces";
 
@@ -12,9 +12,9 @@ interface ShopsTableProps {
 }
 
 const ShopsTable: React.FC<ShopsTableProps> = ({ accountId, ...rest }) => {
-	let endpoint = Endpoints.shops;
+	let endpoint = Endpoints.shops(accountId);
 
-	const columns: ColumnProps[] = [
+	const columns: Column[] = [
 		{
 			field: "id",
 			header: "ID",
@@ -51,7 +51,7 @@ const ShopsTable: React.FC<ShopsTableProps> = ({ accountId, ...rest }) => {
 		},
 	];
 
-	const createFields = [
+	const createFields: Field[] = [
 		{ name: "name", label: "Name", type: "text" },
 		{ name: "businessName", label: "Business Name", type: "text" },
 		{ name: "email", label: "Email", type: "email" },
@@ -60,13 +60,10 @@ const ShopsTable: React.FC<ShopsTableProps> = ({ accountId, ...rest }) => {
 			label: "Industry",
 			type: "dropdown",
 			options: [
-				"Food",
-				"Retail",
-				"Clothing",
-				"Entertainment",
-				"Health",
-				"Technology",
-				"Other",
+				{ label: "Retail", value: "retail" },
+				{ label: "Food", value: "food" },
+				{ label: "Technology", value: "technology" },
+				{ label: "Other", value: "other" },
 			],
 		},
 	];

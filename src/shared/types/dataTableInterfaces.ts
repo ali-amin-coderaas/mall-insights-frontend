@@ -1,10 +1,10 @@
-export interface ColumnProps {
+export interface Column {
 	field: string;
 	header: string;
 	body: body;
 }
 
-export interface FieldProps {
+export interface Field {
 	name: string;
 	label: string;
 	type: string;
@@ -17,7 +17,7 @@ export interface CreateDialogProps {
 	onSubmit: any;
 	visible: any;
 	onHide: any;
-	fields?: FieldProps[] | undefined;
+	fields?: Field[] | undefined;
 	forUpdate?: boolean | undefined;
 	initialValue?: {} | undefined;
 }
@@ -25,7 +25,7 @@ export interface CreateDialogProps {
 type body = (rowData: any) => JSX.Element;
 
 export interface DataTableProps {
-	columns: ColumnProps[];
+	columns: Column[];
 	createDialog: ({
 		onSubmit,
 		visible,
@@ -37,10 +37,10 @@ export interface DataTableProps {
 		onSubmit: any;
 		visible: any;
 		onHide: any;
-		fields: FieldProps[] | undefined;
+		fields: Field[] | undefined;
 		forUpdate?: boolean | undefined;
 		initialValue?: {} | undefined;
 	}) => JSX.Element;
-	fields: FieldProps[];
+	fields: Field[];
 	endpoint: string;
 }

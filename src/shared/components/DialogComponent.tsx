@@ -3,7 +3,7 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
-import { CreateDialogProps, FieldProps } from "../types/dataTableInterfaces";
+import { CreateDialogProps, Field } from "../types/dataTableInterfaces";
 
 const DialogComponent: React.FC<CreateDialogProps> = ({
 	onSubmit,
@@ -47,7 +47,7 @@ const DialogComponent: React.FC<CreateDialogProps> = ({
 			footer={dialogFooter}
 			onHide={onHide}
 		>
-			{fields?.map((field: FieldProps, index: number) => {
+			{fields?.map((field: Field, index: number) => {
 				if (field.type === "dropdown") {
 					return (
 						<div key={index} className="field">

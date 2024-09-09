@@ -3,7 +3,7 @@ import AccountsPage from "../pages/Accounts/AccountsPage";
 import AccountPage from "../pages/Accounts/SingleAccountPage";
 import LoginPage from "../pages/Auth/Login/LoginPage";
 import DashboardPage from "../pages/Dashboard/DashboardPage";
-import ShopPage from "../pages/Shops/ShopPage";
+import ShopPage from "../pages/Shops/SingleShopPage";
 import Root from "../shared/components/layout/Root";
 import { Links } from "../shared/Links";
 import ProtectedRoute from "./ProtectedRoute";

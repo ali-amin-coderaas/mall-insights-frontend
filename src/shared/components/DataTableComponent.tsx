@@ -7,8 +7,8 @@ import { Skeleton } from "primereact/skeleton";
 import React, { useState } from "react";
 import { useToast } from "../context/ToastContext";
 import useApi from "../hooks/useApi";
-import { DataTableProps, FieldProps } from "../types/dataTableInterfaces";
-import { ColumnProps } from "./../types/dataTableInterfaces";
+import { DataTableProps, Field } from "../types/dataTableInterfaces";
+import { Column } from "./../types/dataTableInterfaces";
 
 const DataTableComponent: React.FC<DataTableProps> = ({
 	columns,
@@ -50,7 +50,7 @@ const DataTableComponent: React.FC<DataTableProps> = ({
 	};
 	const handleCreateDialogSubmit = (formData: Record<string, string>) => {
 		const dataToSubmit = fields.reduce(
-			(acc: Record<string, string>, field: FieldProps) => {
+			(acc: Record<string, string>, field: Field) => {
 				acc[field.name] = formData[field.name] || "";
 				return acc;
 			},
@@ -105,7 +105,7 @@ const DataTableComponent: React.FC<DataTableProps> = ({
 					header={header}
 					footer={footer}
 				>
-					{columns.map((col: ColumnProps, index: number) => (
+					{columns.map((col: Column, index: number) => (
 						<Column
 							sortable
 							key={index}

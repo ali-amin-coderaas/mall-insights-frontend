@@ -4,17 +4,17 @@ export class Endpoints {
 	//Homepage
 	static home = () => "/";
 
-	//Auth Endpoints
+	//Auth
 	static login = () => "/auth/login";
 	static register = () => "/auth/register";
 
-	//Account Endpoints
+	//Accounts
 	static accounts = () => "/accounts";
 
-	//Shop Endpoints
+	//Shops
 	static shops = (accountId: AccountId) => `/accounts/${accountId}/shops`;
 
 	//analytics
-	static accountsAnalytics = () => `/stats/accounts/type`;
-	static shopsAnalytics = () => `/stats/shops/industry`;
+	static accountsAnalytics = () => `/analytics/accounts/type`;
+	static shopsAnalytics = () => `/analytics/shops/industry`;
 }
