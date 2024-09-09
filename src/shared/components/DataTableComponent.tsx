@@ -1,5 +1,5 @@
 import { Button } from "primereact/button";
-import { Column } from "primereact/column";
+import { Column as PrimeColumn } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { InputText } from "primereact/inputtext";
 import { Paginator } from "primereact/paginator";
@@ -7,13 +7,20 @@ import { Skeleton } from "primereact/skeleton";
 import React, { useState } from "react";
 import { useToast } from "../context/ToastContext";
 import useApi from "../hooks/useApi";
-import { DataTableProps, Field } from "../types/dataTableInterfaces";
+import { CreateDialogProps, Field } from "../types/dataTableInterfaces";
 import { Column } from "./../types/dataTableInterfaces";
+
+export interface DataTableProps {
+	columns: Column[];
+	createDialog: React.ComponentType<CreateDialogProps>;
+	dialogFields: Field[];
+	endpoint: string;
+}
 
 const DataTableComponent: React.FC<DataTableProps> = ({
 	columns,
 	createDialog: CreateDialog,
-	fields,
+	dialogFields,
 	endpoint,
 }) => {
 	const {
@@ -49,7 +56,7 @@ const DataTableComponent: React.FC<DataTableProps> = ({
 		setCurrentPage(1);
 	};
 	const handleCreateDialogSubmit = (formData: Record<string, string>) => {
-		const dataToSubmit = fields.reduce(
+		const dataToSubmit = dialogFields.reduce(
 			(acc: Record<string, string>, field: Field) => {
 				acc[field.name] = formData[field.name] || "";
 				return acc;
@@ -106,7 +113,7 @@ const DataTableComponent: React.FC<DataTableProps> = ({
 					footer={footer}
 				>
 					{columns.map((col: Column, index: number) => (
-						<Column
+						<PrimeColumn
 							sortable
 							key={index}
 							field={col.field}
@@ -118,7 +125,7 @@ const DataTableComponent: React.FC<DataTableProps> = ({
 			</div>
 			{CreateDialog && (
 				<CreateDialog
-					fields={fields}
+					fields={dialogFields}
 					visible={dialogVisible}
 					onHide={handleDialogHide}
 					onSubmit={handleCreateDialogSubmit}

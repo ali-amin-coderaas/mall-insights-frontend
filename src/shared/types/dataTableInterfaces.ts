@@ -23,24 +23,3 @@ export interface CreateDialogProps {
 }
 
 type body = (rowData: any) => JSX.Element;
-
-export interface DataTableProps {
-	columns: Column[];
-	createDialog: ({
-		onSubmit,
-		visible,
-		onHide,
-		fields,
-		forUpdate,
-		initialValue,
-	}: {
-		onSubmit: any;
-		visible: any;
-		onHide: any;
-		fields: Field[] | undefined;
-		forUpdate?: boolean | undefined;
-		initialValue?: {} | undefined;
-	}) => JSX.Element;
-	fields: Field[];
-	endpoint: string;
-}

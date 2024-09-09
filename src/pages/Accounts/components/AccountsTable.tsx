@@ -22,7 +22,7 @@ const AccountsTable = () => {
 				]
 			}
 			createDialog={DialogComponent}
-			fields={createAccountFields}
+			dialogFields={createAccountFields}
 		/>
 	);
 };

@@ -74,7 +74,7 @@ const ShopsTable: React.FC<ShopsTableProps> = ({ accountId, ...rest }) => {
 				endpoint={endpoint}
 				columns={columns}
 				createDialog={DialogComponent}
-				fields={createFields}
+				dialogFields={createFields}
 			/>
 		</div>
 	);
