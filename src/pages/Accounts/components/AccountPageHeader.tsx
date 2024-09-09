@@ -9,7 +9,7 @@ import DialogComponent from "../../../shared/components/DialogComponent";
 import { useToast } from "../../../shared/context/ToastContext";
 import useApi from "../../../shared/hooks/useApi";
 import { Links } from "../../../shared/Links";
-import { Account } from "../types/AccountInterfaces";
+import { Account } from "../types/accountInterfaces";
 
 interface AccountPageHeaderProps {
 	loading: boolean;

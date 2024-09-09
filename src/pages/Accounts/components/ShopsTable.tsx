@@ -4,7 +4,7 @@ import DataTableComponent from "../../../shared/components/DataTableComponent";
 import DialogComponent from "../../../shared/components/DialogComponent";
 import { Column, Field } from "../../../shared/types/dataTableInterfaces";
 import { formatTimeStamp } from "../../../shared/utils/FormatTimeStamp";
-import { AccountId } from "../types/AccountInterfaces";
+import { AccountId } from "../types/accountInterfaces";
 
 interface ShopsTableProps {
 	accountId: AccountId;

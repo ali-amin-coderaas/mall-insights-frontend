@@ -2,27 +2,38 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Skeleton } from "primereact/skeleton";
-import { Tag } from "primereact/tag";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Endpoints } from "../../../api/Endpoints";
 import DialogComponent from "../../../shared/components/DialogComponent";
 import { useToast } from "../../../shared/context/ToastContext";
 import useApi from "../../../shared/hooks/useApi";
+import { Links } from "../../../shared/Links";
+import { Field } from "../../../shared/types/dataTableInterfaces";
+import { Shop } from "../types/shopInterface";
 
-const ShopPageHeader = ({
+interface ShopPageHeaderProps {
+	loading: boolean;
+	shop: Shop;
+	setShop: React.Dispatch<React.SetStateAction<Shop | undefined>>;
+	disabled?: boolean;
+	fields?: Field[];
+}
+
+const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 	loading,
 	shop,
-	setAccount,
+	setShop,
 	disabled = true,
-	fields = {},
+	fields,
 	...rest
 }) => {
 	const navigate = useNavigate();
-	const { accountId } = useParams();
-	const { deleteItem, updateItem } = useApi("accounts");
+	const { shopId } = useParams();
+	const { deleteItem, updateItem } = useApi(Endpoints.shops(Number(shopId)));
 	const { showToast } = useToast();
 	const [editDialogVisible, setEditDialogVisible] = useState(false);
-	const [editableAccount, setEditableAccount] = useState({});
+	const [editableShop, setEditableShop] = useState({});
 
 	const SkeletonLabelTemplate = (
 		<div className="flex flex-column gap-2">
@@ -31,41 +42,34 @@ const ShopPageHeader = ({
 		</div>
 	);
 
-	const accountTypes = [
+	const shopTypes = [
 		{ label: "Personal", value: "Personal", severity: "primary" },
 		{ label: "Business", value: "Business", severity: "warning" },
 		{ label: "Non-Profit", value: "Non-Profit", severity: "success" },
 	];
 
-	const getSeverity = (type) => {
-		const accountType = accountTypes.find((item) => item.value === type);
-		return accountType ? accountType.severity : null;
-	};
-
 	useEffect(() => {
 		if (shop) {
-			setEditableAccount(shop);
+			setEditableShop(shop);
 		}
 	}, [shop]);
 
-	const deleteAccount = async () => {
+	const deleteShop = () => {
 		try {
-			await deleteItem(accountId);
-			navigate("/accounts");
+			deleteItem(Number(shopId));
+			navigate(Links.ShopLinks.SingleShopPage(Number(shopId)));
 		} catch (error) {
 			throw error;
 		}
 	};
 
-	const editAccount = async (formData) => {
+	const editShop = async (formData: Partial<Shop>) => {
 		try {
-			const updatedAccount = {
-				name: formData.name,
-				accountType: formData.accountType,
-			};
-			const newAccount = await updateItem(accountId, updatedAccount);
+			const updatedFields = { ...editableShop, ...formData };
 
-			setAccount({ ...shop, ...newAccount });
+			await updateItem(Number(shopId), updatedFields);
+
+			setShop({ ...shop, ...updatedFields });
 			setEditDialogVisible(false);
 			showToast("success", "shop updated", "shop updated successfully");
 		} catch (error) {
@@ -74,12 +78,15 @@ const ShopPageHeader = ({
 		}
 	};
 
-	const handleInputChange = (e, field) => {
-		setEditableAccount({
-			...editableAccount,
-			[field]: e.target.value,
-		});
-	};
+	// const handleInputChange = (
+	// 	e: React.ChangeEvent<HTMLInputElement>,
+	// 	field: string
+	// ) => {
+	// 	setEditableShop({
+	// 		...editableShop,
+	// 		[field]: e.target.value,
+	// 	});
+	// };
 
 	const confirmDeleteDialog = () => {
 		confirmDialog({
@@ -88,7 +95,7 @@ const ShopPageHeader = ({
 			icon: "pi pi-exclamation-triangle",
 			defaultFocus: "reject",
 			accept: () => {
-				deleteAccount();
+				deleteShop();
 				showToast("success", "shop deleted", "shop deleted successfully");
 			},
 		});
@@ -112,14 +119,9 @@ const ShopPageHeader = ({
 				) : (
 					<div>
 						<label htmlFor="shop-type" className="text-sm font-regular">
-							shop type
+							Industry
 						</label>
-						<div>
-							<Tag
-								value={shop.accountType}
-								severity={getSeverity(shop.accountType)}
-							/>
-						</div>
+						<div>{shop.industry}</div>
 					</div>
 				)}
 			</div>
@@ -148,10 +150,10 @@ const ShopPageHeader = ({
 			type: "text",
 		},
 		{
-			name: "accountType",
+			name: "shopType",
 			label: "Type",
 			type: "dropdown",
-			options: accountTypes,
+			options: shopTypes,
 		},
 	];
 
@@ -160,7 +162,7 @@ const ShopPageHeader = ({
 			<Card title={title}></Card>
 
 			<DialogComponent
-				onSubmit={editAccount}
+				onSubmit={editShop}
 				visible={editDialogVisible}
 				fields={updateFields}
 				forUpdate

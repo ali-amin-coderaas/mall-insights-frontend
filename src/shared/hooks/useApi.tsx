@@ -11,11 +11,10 @@ type UseApiReturn<T> = {
 	currentPage: number;
 	pageSize: number;
 	searchQuery: string;
-	createItem: (data: T) => void;
-	updateItem: (id: number, data: T) => void;
+	createItem: (data: T) => Promise<ResponseData<T> | undefined>;
+	updateItem: (id: number, data: T) => Promise<ResponseData<T> | undefined>;
 	getItemById: (id: number) => Promise<ResponseData<T> | undefined>;
-	deleteItem: (id: number) => void;
-
+	deleteItem: (id: number) => Promise<ResponseData<T> | undefined>;
 	setCurrentPage: (page: number) => void;
 	setPageSize: (pageSize: number) => void;
 	setSearchQuery: (searchQuery: string) => void;
@@ -71,9 +70,9 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 	const updateItem = async (id: number, data: any) => {
 		setIsLoading(true);
 		try {
-			const updatedData = await apiService.update(id, data);
+			// const updatedData = await apiService.update(id, data);
 
-			return updatedData;
+			return await apiService.update(id, data);
 		} catch (error) {
 			setError(error as Error);
 		} finally {
@@ -81,11 +80,12 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 		}
 	};
 
-	const createItem = async (data: T) => {
+	const createItem = async (data: T): Promise<ResponseData<T> | undefined> => {
 		setIsLoading(true);
 		try {
-			await apiService.create(data);
+			const response = await apiService.create(data);
 			await fetchData(currentPage, pageSize, searchQuery, sortBy, order);
+			return response.data as unknown as ResponseData<T>;
 		} catch (error) {
 			setError(error as Error);
 		} finally {
@@ -109,6 +109,7 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 		setIsLoading(true);
 		try {
 			await apiService.softDelete(id);
+			return undefined;
 		} catch (error) {
 			setError(error as Error);
 		} finally {

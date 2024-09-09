@@ -12,6 +12,7 @@ const DialogComponent: React.FC<CreateDialogProps> = ({
 	fields,
 	forUpdate,
 	initialValue,
+	...rest
 }) => {
 	const [formData, setFormData] = useState<Record<string, string>>({});
 
@@ -46,6 +47,7 @@ const DialogComponent: React.FC<CreateDialogProps> = ({
 			className="p-fluid"
 			footer={dialogFooter}
 			onHide={onHide}
+			{...rest}
 		>
 			{fields?.map((field: Field, index: number) => {
 				if (field.type === "dropdown") {

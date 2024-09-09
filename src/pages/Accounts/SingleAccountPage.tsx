@@ -4,7 +4,7 @@ import { Endpoints } from "../../api/Endpoints";
 import useApi from "../../shared/hooks/useApi";
 import AccountPageHeader from "./components/AccountPageHeader";
 import ShopsTable from "./components/ShopsTable";
-import { Account } from "./types/AccountInterfaces";
+import { Account } from "./types/accountInterfaces";
 
 const SingleAccountPage = () => {
 	const { accountId } = useParams();
