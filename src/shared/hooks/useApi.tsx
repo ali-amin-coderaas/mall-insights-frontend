@@ -1,30 +1,34 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ApiService from "../../api/ApiService";
-import { ResponseData } from "../types/responseDataInterfaces";
+import { Data } from "../types/ApiResponseInterfaces";
 
-type UseApiReturn<T> = {
-	data: ResponseData<T> | undefined;
+// Define a type for the API response
+type UseApiResponse<T> = {
+	data: Data<T> | undefined;
 	isLoading: boolean;
 	error: Error | null;
-	totalItems: number;
-	currentPage: number;
-	pageSize: number;
+	createItem: (data: T) => Promise<Data<T> | undefined>;
+	updateItem: (id: number, data: T) => Promise<Data<T> | undefined>;
+	getItemById: (id: number) => Promise<Data<T> | undefined>;
+	deleteItem: (id: number) => Promise<void>;
 	searchQuery: string;
-	createItem: (data: T) => Promise<ResponseData<T> | undefined>;
-	updateItem: (id: number, data: T) => Promise<ResponseData<T> | undefined>;
-	getItemById: (id: number) => Promise<ResponseData<T> | undefined>;
-	deleteItem: (id: number) => Promise<ResponseData<T> | undefined>;
+	currentPage: number;
+	totalItems: number | undefined;
+	pageSize: number;
 	setCurrentPage: (page: number) => void;
 	setPageSize: (pageSize: number) => void;
 	setSearchQuery: (searchQuery: string) => void;
 };
 
-function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
-	const [data, setData] = useState<ResponseData<T> | undefined>(undefined);
-	const [isLoading, setIsLoading] = useState(false);
+function useApi<T>(
+	endpoint: string,
+	enableUseEffect = false
+): UseApiResponse<T> {
+	const [data, setData] = useState<Data<T> | undefined>(undefined);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<Error | null>(null);
-	const [totalItems, setTotalItems] = useState(0);
+	const [totalItems, setTotalItems] = useState<number | undefined>(undefined);
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const apiService = new ApiService(endpoint);
@@ -50,6 +54,8 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 		order: string
 	) => {
 		setIsLoading(true);
+		setError(null); // Reset error state before fetching
+
 		try {
 			const response = await apiService.getAll(
 				page,
@@ -58,8 +64,8 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 				sortBy,
 				order
 			);
-			setData(response.data);
-			setTotalItems(response.data?.pagination?.totalItems || 0);
+			setData(response.data as Data<T>);
+			setTotalItems(response.data.pagination?.totalItems);
 		} catch (error) {
 			setError(error as Error);
 		} finally {
@@ -67,12 +73,12 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 		}
 	};
 
-	const updateItem = async (id: number, data: any) => {
+	const updateItem = async (id: number, data: T) => {
 		setIsLoading(true);
 		try {
-			// const updatedData = await apiService.update(id, data);
-
-			return await apiService.update(id, data);
+			const updatedItem = await apiService.update(id, data);
+			await fetchData(currentPage, pageSize, searchQuery, sortBy, order);
+			return updatedItem;
 		} catch (error) {
 			setError(error as Error);
 		} finally {
@@ -80,12 +86,12 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 		}
 	};
 
-	const createItem = async (data: T): Promise<ResponseData<T> | undefined> => {
+	const createItem = async (data: T): Promise<Data<T> | undefined> => {
 		setIsLoading(true);
 		try {
 			const response = await apiService.create(data);
 			await fetchData(currentPage, pageSize, searchQuery, sortBy, order);
-			return response.data as unknown as ResponseData<T>;
+			return response;
 		} catch (error) {
 			setError(error as Error);
 		} finally {
@@ -96,7 +102,7 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 	const getItemById = async (id: number) => {
 		setIsLoading(true);
 		try {
-			const response = await apiService.getById<ResponseData<T>>(id);
+			const response = await apiService.getById(id);
 			return response.data;
 		} catch (error) {
 			setError(error as Error);
@@ -109,7 +115,6 @@ function useApi<T>(endpoint: string, enableUseEffect = false): UseApiReturn<T> {
 		setIsLoading(true);
 		try {
 			await apiService.softDelete(id);
-			return undefined;
 		} catch (error) {
 			setError(error as Error);
 		} finally {

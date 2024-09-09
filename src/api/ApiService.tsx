@@ -1,4 +1,9 @@
+import { APIResponse, Data } from "../shared/types/ApiResponseInterfaces";
 import api from "./api";
+import {
+	formatApiResponse,
+	formatSingleItemResponse,
+} from "./utils/responseHelper";
 
 class ApiService {
 	endpoint: string;
@@ -7,15 +12,15 @@ class ApiService {
 		this.endpoint = endpoint;
 	}
 
-	async getAll(
+	async getAll<T>(
 		page: number,
 		pageSize: number,
 		searchQuery: string,
 		sortBy: string,
 		order: string
-	) {
+	): Promise<APIResponse<T>> {
 		try {
-			const response = await api.get(`${this.endpoint}`, {
+			const response = await api.get(this.endpoint, {
 				params: {
 					page: page,
 					pageSize: pageSize,
@@ -24,36 +29,16 @@ class ApiService {
 					order: order,
 				},
 			});
-
-			return {
-				status: response.data.status,
-				data: {
-					items: response.data.data.items,
-					pagination: {
-						totalItems: response.data.data.pagination.totalItems,
-						currentPage: parseInt(
-							response.data.data.pagination.currentPage,
-							10
-						),
-						pageSize: parseInt(response.data.data.pagination.pageSize, 10),
-						totalPages: response.data.data.pagination.totalPages,
-					},
-					links: null,
-				},
-				error: response.data.error || null,
-				meta: response.data.meta,
-			};
+			return formatApiResponse<T>(response);
 		} catch (error) {
 			throw error;
 		}
 	}
 
-	async getById<T>(id: number): Promise<{ data: T }> {
+	async getById<T>(id: number): Promise<Data<T>> {
 		try {
 			const response = await api.get(`${this.endpoint}/${id}`);
-			return {
-				data: response.data,
-			};
+			return formatSingleItemResponse<T>(response);
 		} catch (error) {
 			throw error;
 		}
@@ -67,19 +52,19 @@ class ApiService {
 		}
 	}
 
-	async update<T>(id: number, data: T): Promise<T> {
+	async update<T>(id: number, data: T): Promise<Data<T>> {
 		try {
 			const response = await api.put(`${this.endpoint}/${id}`, data);
-			return response.data;
+			return formatSingleItemResponse<T>(response);
 		} catch (error) {
 			throw error;
 		}
 	}
 
-	async create<T>(data: T): Promise<{ data: T[] }> {
+	async create<T>(data: T): Promise<Data<T>> {
 		try {
-			const response = await api.post(`${this.endpoint}/`, data);
-			return { data: response.data.data.items };
+			const response = await api.post(this.endpoint, data);
+			return formatSingleItemResponse<T>(response);
 		} catch (error) {
 			throw error;
 		}
@@ -87,7 +72,7 @@ class ApiService {
 
 	async getAnalytics() {
 		try {
-			const response = await api.get(`${this.endpoint}`);
+			const response = await api.get(this.endpoint);
 			return response.data;
 		} catch (error: any) {
 			console.error("Error fetching account stats:", error);
@@ -98,24 +83,6 @@ class ApiService {
 			);
 		}
 	}
-
-	// async getShopStats() {
-	// 	try {
-	// 		console.log(
-	// 			"🚀 ~ file: ApiService.tsx:106 ~ ApiService ~ getShopStats ~ this.endpoint:",
-	// 			this.endpoint
-	// 		);
-	// 		const response = await api.get(`${this.endpoint}/shops/industry`);
-	// 		return response.data;
-	// 	} catch (error: any) {
-	// 		console.error("Error fetching shop stats:", error);
-	// 		throw new Error(
-	// 			`Failed to fetch shop stats: ${
-	// 				error.response?.data?.message || error.message
-	// 			}`
-	// 		);
-	// 	}
-	// }
 }
 
 export default ApiService;

@@ -9,13 +9,14 @@ import DialogComponent from "../../../shared/components/DialogComponent";
 import { useToast } from "../../../shared/context/ToastContext";
 import useApi from "../../../shared/hooks/useApi";
 import { Links } from "../../../shared/Links";
+import { Data } from "../../../shared/types/ApiResponseInterfaces";
 import { Field } from "../../../shared/types/dataTableInterfaces";
 import { Shop } from "../types/shopInterface";
 
 interface ShopPageHeaderProps {
 	loading: boolean;
-	shop: Shop;
-	setShop: React.Dispatch<React.SetStateAction<Shop | undefined>>;
+	shop: Data<Shop> | undefined;
+	setShop: React.Dispatch<React.SetStateAction<Data<Shop> | undefined>>;
 	disabled?: boolean;
 	fields?: Field[];
 }
@@ -49,17 +50,20 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 	];
 
 	useEffect(() => {
-		if (shop) {
-			setEditableShop(shop);
+		// Ensure we set the editable shop when the shop data is available
+		if (shop?.items?.length) {
+			const currentShop = shop.items[0]; // Assuming we are editing the first shop for now
+			setEditableShop(currentShop);
 		}
 	}, [shop]);
 
-	const deleteShop = () => {
+	const deleteShop = async () => {
 		try {
-			deleteItem(Number(shopId));
-			navigate(Links.ShopLinks.SingleShopPage(Number(shopId)));
+			await deleteItem(Number(shopId));
+			navigate(Links.ShopLinks.SingleShop(Number(shopId)));
+			showToast("success", "shop deleted", "Shop deleted successfully");
 		} catch (error) {
-			throw error;
+			showToast("error", "Delete failed", "Unable to delete shop");
 		}
 	};
 
@@ -69,24 +73,23 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 
 			await updateItem(Number(shopId), updatedFields);
 
-			setShop({ ...shop, ...updatedFields });
+			// Update the state with the modified shop data
+			if (shop) {
+				setShop({
+					...shop,
+					items: shop.items.map((s) =>
+						s.id === Number(shopId) ? { ...s, ...updatedFields } : s
+					),
+				});
+			}
+
 			setEditDialogVisible(false);
-			showToast("success", "shop updated", "shop updated successfully");
+			showToast("success", "shop updated", "Shop updated successfully");
 		} catch (error) {
 			console.error("Error updating shop:", error);
 			showToast("error", "Update failed", "Unable to update shop");
 		}
 	};
-
-	// const handleInputChange = (
-	// 	e: React.ChangeEvent<HTMLInputElement>,
-	// 	field: string
-	// ) => {
-	// 	setEditableShop({
-	// 		...editableShop,
-	// 		[field]: e.target.value,
-	// 	});
-	// };
 
 	const confirmDeleteDialog = () => {
 		confirmDialog({
@@ -111,7 +114,7 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 						<label htmlFor="shop-name" className="text-sm font-regular">
 							shop name
 						</label>
-						<p className="font-bold m-0">{shop.name}</p>
+						<p className="font-bold m-0">{shop?.items[0].name}</p>
 					</div>
 				)}
 				{loading ? (
@@ -121,7 +124,7 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 						<label htmlFor="shop-type" className="text-sm font-regular">
 							Industry
 						</label>
-						<div>{shop.industry}</div>
+						<div>{shop?.items[0].industry}</div>
 					</div>
 				)}
 			</div>

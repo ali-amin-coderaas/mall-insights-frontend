@@ -107,7 +107,7 @@ const DataTableComponent: React.FC<DataTableProps> = ({
 				<DataTable
 					scrollable
 					scrollHeight="600px"
-					value={items}
+					value={items as any}
 					first={(currentPage - 1) * pageSize}
 					header={header}
 					footer={footer}

@@ -5,6 +5,7 @@ import { Skeleton } from "primereact/skeleton";
 import { Tag } from "primereact/tag";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Endpoints } from "../../../api/Endpoints";
 import DialogComponent from "../../../shared/components/DialogComponent";
 import { useToast } from "../../../shared/context/ToastContext";
 import useApi from "../../../shared/hooks/useApi";
@@ -30,7 +31,7 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 }) => {
 	const navigate = useNavigate();
 	const { accountId } = useParams();
-	const { deleteItem, updateItem } = useApi("accounts");
+	const { deleteItem, updateItem } = useApi(Endpoints.accounts());
 	const { showToast } = useToast();
 	const [editDialogVisible, setEditDialogVisible] = useState(false);
 	const [editableAccount, setEditableAccount] = useState({});
@@ -48,11 +49,6 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 		{ label: "Non-Profit", value: "Non-Profit", severity: "success" },
 	];
 
-	const getSeverity = (type: string) => {
-		const accountType = accountTypes.find((item) => item.value === type);
-		return accountType ? accountType.severity : null;
-	};
-
 	useEffect(() => {
 		if (account) {
 			setEditableAccount(account);
@@ -68,31 +64,19 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 		}
 	};
 
-	const editAccount = async (formData) => {
+	const editAccount = async (formData: Partial<Account>) => {
 		try {
-			const updatedAccount = {
-				name: formData.name,
-				accountType: formData.accountType,
-			};
-			const newAccount = await updateItem(accountId, updatedAccount);
+			const updatedFields = { ...editableAccount, ...formData };
 
-			setAccount({ ...account, ...newAccount });
+			await updateItem(Number(accountId), updatedFields);
+
+			setAccount({ ...account, ...updatedFields });
 			setEditDialogVisible(false);
-			showToast("success", "Account updated", "Account updated successfully");
+			showToast("success", "account updated", "account updated successfully");
 		} catch (error) {
 			console.error("Error updating account:", error);
 			showToast("error", "Update failed", "Unable to update account");
 		}
-	};
-
-	const handleInputChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-		field: string
-	) => {
-		setEditableAccount({
-			...editableAccount,
-			[field]: e.target.value,
-		});
 	};
 
 	const confirmDeleteDialog = () => {
@@ -129,10 +113,7 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 							Account type
 						</label>
 						<div>
-							<Tag
-								value={account?.accountType}
-								// severity={getSeverity(account?.accountType)}
-							/>
+							<Tag value={account?.accountType} />
 						</div>
 					</div>
 				)}
