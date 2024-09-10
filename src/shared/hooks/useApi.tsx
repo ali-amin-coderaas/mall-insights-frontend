@@ -8,8 +8,8 @@ type UseApiResponse<T> = {
 	data: Data<T> | undefined;
 	isLoading: boolean;
 	error: Error | null;
-	createItem: (data: T) => Promise<Data<T> | undefined>;
-	updateItem: (id: number, data: T) => Promise<Data<T> | undefined>;
+	createItem: (data: T) => Promise<T | undefined>;
+	updateItem: (id: number, data: T) => Promise<T | undefined>;
 	getItemById: (id: number) => Promise<T | undefined>;
 	deleteItem: (id: number) => Promise<void>;
 	searchQuery: string;

@@ -13,8 +13,8 @@ export class Links {
 	static ShopLinks = class {
 		static ShopsPage = () => `/accounts/:accountId/shops`;
 		static SingleShopPage = () => `/accounts/:accountId/shops/:shopId`;
-		static SingleShop = (shopId: number) =>
-			`/accounts/:accountId/shops/${shopId}`;
+		static SingleShop = (accountId: number, shopId: number) =>
+			`/accounts/${accountId}/shops/${shopId}`;
 	};
 
 	//Auth Links

@@ -15,6 +15,7 @@ import { Shop } from "../types/shopInterface";
 interface ShopPageHeaderProps {
 	loading: boolean;
 	shop: Shop | undefined;
+	accountId: number;
 	setShop: React.Dispatch<React.SetStateAction<Shop | undefined>>;
 	disabled?: boolean;
 	fields?: Field[];
@@ -25,6 +26,7 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 	shop,
 	setShop,
 	disabled = true,
+	accountId,
 	fields,
 	...rest
 }) => {
@@ -51,7 +53,7 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 	useEffect(() => {
 		// Ensure we set the editable shop when the shop data is available
 		if (shop) {
-			const currentShop = shop; // Assuming we are editing the first shop for now
+			const currentShop = shop;
 			setEditableShop(currentShop);
 		}
 	}, [shop]);
@@ -59,7 +61,7 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 	const deleteShop = async () => {
 		try {
 			await deleteItem(Number(shopId));
-			navigate(Links.ShopLinks.SingleShop(Number(shopId)));
+			navigate(Links.AccountLinks.SingleAccount(Number(accountId)));
 			showToast("success", "shop deleted", "Shop deleted successfully");
 		} catch (error) {
 			showToast("error", "Delete failed", "Unable to delete shop");

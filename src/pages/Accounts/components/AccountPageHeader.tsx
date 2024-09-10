@@ -55,9 +55,9 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 		}
 	}, [account]);
 
-	const deleteAccount = () => {
+	const deleteAccount = async () => {
 		try {
-			deleteItem(Number(accountId));
+			await deleteItem(Number(accountId));
 			navigate(Links.AccountLinks.AccountsPage());
 		} catch (error) {
 			throw error;

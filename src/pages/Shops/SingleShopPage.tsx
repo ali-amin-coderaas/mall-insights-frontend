@@ -37,7 +37,14 @@ const SingleShopPage = () => {
 		fetchShop();
 	}, [shopId]);
 	return (
-		shop && <ShopPageHeader shop={shop} loading={isLoading} setShop={setShop} />
+		shop && (
+			<ShopPageHeader
+				shop={shop}
+				loading={isLoading}
+				setShop={setShop}
+				accountId={Number(accountId)}
+			/>
+		)
 	);
 };
 

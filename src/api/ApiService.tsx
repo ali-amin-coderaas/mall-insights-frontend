@@ -4,10 +4,13 @@ import {
 	SingleItemResponse,
 } from "../shared/types/ApiResponseInterfaces";
 import api from "./api";
-import { makeGetRequest } from "./utils/axiosFunctions";
 import {
-	formatSingleItemResponse,
-} from "./utils/responseHelper";
+	makeDeleteRequest,
+	makeGetRequest,
+	makePostRequest,
+	makePutRequest,
+} from "./utils/axiosFunctions";
+import { formatSingleItemResponse } from "./utils/responseHelper";
 
 class ApiService {
 	endpoint: string;
@@ -55,25 +58,31 @@ class ApiService {
 
 	async softDelete(id: number): Promise<void> {
 		try {
-			await api.delete(`${this.endpoint}/${id}`);
+			await makeDeleteRequest(`${this.endpoint}/${id}`);
 		} catch (error) {
 			throw error;
 		}
 	}
 
-	async update<T>(id: number, data: T): Promise<Data<T>> {
+	async update<T>(id: number, data: T): Promise<T> {
 		try {
-			const response = await api.put(`${this.endpoint}/${id}`, data);
-			return formatSingleItemResponse<T>(response);
+			const response = await makePutRequest<SingleItemResponse<T>>(
+				`${this.endpoint}/${id}`,
+				data
+			);
+			return response.data.items;
 		} catch (error) {
 			throw error;
 		}
 	}
 
-	async create<T>(data: T): Promise<Data<T>> {
+	async create<T>(data: T): Promise<T> {
 		try {
-			const response = await api.post(this.endpoint, data);
-			return formatSingleItemResponse<T>(response);
+			const response = await makePostRequest<SingleItemResponse<T>>(
+				this.endpoint,
+				data
+			);
+			return response.data.items;
 		} catch (error) {
 			throw error;
 		}
