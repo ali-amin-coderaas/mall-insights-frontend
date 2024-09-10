@@ -11,9 +11,13 @@ import { Shop } from "./types/shopInterface";
 const SingleShopPage = () => {
 	const { accountId } = useParams();
 	const { shopId } = useParams();
-	const { isLoading, getItemById } = useApi<Shop>(
-		Endpoints.shops(Number(accountId))
+	const endpoint = Endpoints.shops(Number(accountId));
+	console.log(
+		"🚀 ~ file: SingleShopPage.tsx:15 ~ SingleShopPage ~ endpoint:",
+		endpoint
 	);
+
+	const { isLoading, getItemById } = useApi<Shop>(endpoint);
 	const [shop, setShop] = useState<Shop | undefined>(undefined);
 	const navigate = useNavigate();
 

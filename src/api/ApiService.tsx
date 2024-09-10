@@ -1,7 +1,11 @@
-import { APIResponse, Data } from "../shared/types/ApiResponseInterfaces";
-import api from "./api";
 import {
-	formatApiResponse,
+	APIResponse,
+	Data,
+	SingleItemResponse,
+} from "../shared/types/ApiResponseInterfaces";
+import api from "./api";
+import { makeGetRequest } from "./utils/axiosFunctions";
+import {
 	formatSingleItemResponse,
 } from "./utils/responseHelper";
 
@@ -18,9 +22,9 @@ class ApiService {
 		searchQuery: string,
 		sortBy: string,
 		order: string
-	): Promise<APIResponse<T>> {
+	) {
 		try {
-			const response = await api.get(this.endpoint, {
+			const response = await makeGetRequest<APIResponse<T>>(this.endpoint, {
 				params: {
 					page: page,
 					pageSize: pageSize,
@@ -29,16 +33,21 @@ class ApiService {
 					order: order,
 				},
 			});
-			return formatApiResponse<T>(response);
+			return response.data;
 		} catch (error) {
 			throw error;
 		}
 	}
 
-	async getById<T>(id: number): Promise<Data<T>> {
+	async getById<T>(id: number): Promise<T> {
 		try {
-			const response = await api.get(`${this.endpoint}/${id}`);
-			return formatSingleItemResponse<T>(response);
+			// Pass in the type `SingleItemResponse<T>` for the expected response structure
+			const response = await makeGetRequest<SingleItemResponse<T>>(
+				`${this.endpoint}/${id}`
+			);
+
+			// Return the `items` field from the response data
+			return response.data.items;
 		} catch (error) {
 			throw error;
 		}
@@ -72,7 +81,7 @@ class ApiService {
 
 	async getAnalytics<T>() {
 		try {
-			const response = await api.get<Data<T>>(this.endpoint);
+			const response = await makeGetRequest<APIResponse<T>>(this.endpoint);
 			return response.data;
 		} catch (error: any) {
 			console.error("Error fetching account stats:", error);

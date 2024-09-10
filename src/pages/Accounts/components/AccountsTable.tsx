@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Endpoints } from "../../../api/Endpoints";
 import DataTableComponent from "../../../shared/components/DataTableComponent";
 import DialogComponent from "../../../shared/components/DialogComponent";
@@ -5,6 +6,11 @@ import { Column } from "../../../shared/types/dataTableInterfaces";
 
 const AccountsTable = () => {
 	const endpoint = Endpoints.accounts();
+
+	console.log(
+		"🚀 ~ file: AccountsTable.tsx:9 ~ AccountsTable ~ endpoint:",
+		endpoint
+	);
 
 	const createAccountFields = [
 		{
@@ -23,7 +29,11 @@ const AccountsTable = () => {
 		{
 			field: "name",
 			header: "Name",
-			body: (rowData) => rowData.name,
+			body: (rowData) => (
+				<Link to={`${endpoint}/${rowData.id}`} className="text-primary ">
+					{rowData.name}{" "}
+				</Link>
+			),
 		},
 		{
 			field: "accountType",

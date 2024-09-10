@@ -10,12 +10,9 @@ export class Endpoints {
 
 	//Accounts
 	static accounts = () => "/accounts";
-	static singleAccount = (accountId: AccountId) => `/accounts/${accountId}`;
 
 	//Shops
 	static shops = (accountId: AccountId) => `/accounts/${accountId}/shops`;
-	static singleShop = (shopId: number) =>
-		`/accounts/:accountId/shops/${shopId}`;
 
 	//analytics
 	static accountsAnalytics = () => `/analytics/accounts/type`;

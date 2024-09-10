@@ -11,6 +11,20 @@ export interface Data<T> {
 	links?: string | null;
 }
 
+
+export interface SingleItemResponse<T> {
+	status: Status;
+	data: SingleItem<T>;
+	error: null;
+	meta: Meta;
+}
+
+export interface SingleItem<T> {
+	items: T;
+	pagination?: Pagination | null;
+	links?: string | null;
+}
+
 export interface Pagination {
 	currentPage: number;
 	pageSize: number;

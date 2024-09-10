@@ -24,7 +24,7 @@ const ShopsTable: React.FC<ShopsTableProps> = ({ accountId, ...rest }) => {
 			field: "name",
 			header: "Name",
 			body: (rowData) => (
-				<Link to={`/${endpoint}/${rowData.id}`} className="text-primary">
+				<Link to={`${endpoint}/${rowData.id}`} className="text-primary">
 					{rowData.name}
 				</Link>
 			),
