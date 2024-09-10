@@ -6,6 +6,7 @@ import AccountPageHeader from "./components/AccountPageHeader";
 import ShopsTable from "./components/ShopsTable";
 import { Account } from "./types/accountInterfaces";
 
+
 const SingleAccountPage = () => {
 	const { accountId } = useParams();
 	const { isLoading, getItemById } = useApi<Account>(Endpoints.accounts());
@@ -20,7 +21,7 @@ const SingleAccountPage = () => {
 					navigate(Endpoints.accounts());
 					throw new Error("Account not found");
 				}
-				setAccount(account.items[0]);
+				setAccount(account);
 			} catch (error) {
 				throw error;
 			}

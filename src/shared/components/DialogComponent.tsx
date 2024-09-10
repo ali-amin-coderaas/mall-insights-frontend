@@ -1,24 +1,37 @@
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { Dropdown } from "primereact/dropdown";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
-import { CreateDialogProps, Field } from "../types/dataTableInterfaces";
+import { CreateDialogProps } from "../types/dataTableInterfaces";
 
-const DialogComponent: React.FC<CreateDialogProps> = ({
+// Constrain T to be an object where keys are strings and values can be anything
+const DialogComponent = <T extends Record<string, any>>({
 	onSubmit,
 	visible,
 	onHide,
 	fields,
 	forUpdate,
 	initialValue,
+	children,
 	...rest
-}) => {
-	const [formData, setFormData] = useState<Record<string, string>>({});
+}: CreateDialogProps<T>): React.ReactElement => {
+	const [formData, setFormData] = useState<T>(initialValue || {} as T);
 
-	const handleInputChange = (e: any, fieldName: string) => {
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLInputElement>,
+		fieldName: string
+	) => {
 		const val = e.target.value;
-		setFormData({ ...formData, [fieldName]: val });
+		setFormData((prev) => ({ ...prev, [fieldName]: val }));
+	};
+
+	const handleDropChange = (
+		e: DropdownChangeEvent,
+		fieldName: string
+	) => {
+		const val = e.value;
+		setFormData((prev) => ({ ...prev, [fieldName]: val }));
 	};
 
 	const handleSubmit = () => {
@@ -28,7 +41,6 @@ const DialogComponent: React.FC<CreateDialogProps> = ({
 	const dialogFooter = (
 		<div className="flex justify-content-end">
 			<Button label="Cancel" icon="pi pi-times" onClick={onHide} outlined />
-
 			<Button label="Save" icon="pi pi-check" onClick={handleSubmit} />
 		</div>
 	);
@@ -49,7 +61,7 @@ const DialogComponent: React.FC<CreateDialogProps> = ({
 			onHide={onHide}
 			{...rest}
 		>
-			{fields?.map((field: Field, index: number) => {
+			{fields?.map((field, index) => {
 				if (field.type === "dropdown") {
 					return (
 						<div key={index} className="field">
@@ -57,28 +69,14 @@ const DialogComponent: React.FC<CreateDialogProps> = ({
 							<Dropdown
 								options={field.options}
 								value={formData[field.name]}
-								onChange={(e) => handleInputChange(e, field.name)}
+								onChange={(e) => handleDropChange(e, field.name)}
 								key={index}
 								{...field.props}
 							/>
 						</div>
 					);
 				}
-				if (field.type === "text") {
-					return (
-						<div key={index} className="field">
-							<label htmlFor={field.name}>{field.label}</label>
-							<InputText
-								id={field.name}
-								value={formData[field.name] || ""}
-								onChange={(e) => handleInputChange(e, field.name)}
-								type={field.type || "text"}
-							/>
-						</div>
-					);
-				}
-
-				if (field.type === "email") {
+				if (field.type === "text" || field.type === "email") {
 					return (
 						<div key={index} className="field">
 							<label htmlFor={field.name}>{field.label}</label>
@@ -92,6 +90,7 @@ const DialogComponent: React.FC<CreateDialogProps> = ({
 					);
 				}
 			})}
+			{children}
 		</Dialog>
 	);
 };

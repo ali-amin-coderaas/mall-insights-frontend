@@ -8,3 +8,8 @@ export type Account = {
 	updatedAt: Date;
 	accountType: string;
 };
+
+export type AccountAnalytics = {
+	accountType: string;
+	count: number;
+};

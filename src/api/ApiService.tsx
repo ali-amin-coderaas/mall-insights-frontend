@@ -70,9 +70,9 @@ class ApiService {
 		}
 	}
 
-	async getAnalytics() {
+	async getAnalytics<T>() {
 		try {
-			const response = await api.get(this.endpoint);
+			const response = await api.get<Data<T>>(this.endpoint);
 			return response.data;
 		} catch (error: any) {
 			console.error("Error fetching account stats:", error);

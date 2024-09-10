@@ -2,7 +2,6 @@ import { Button } from "primereact/button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../../../api/auth";
-import { Endpoints } from "../../../../api/Endpoints";
 import InputField from "../../../../shared/components/InputField";
 import { useAuth } from "../../../../shared/hooks/useAuth";
 import { Links } from "../../../../shared/Links";

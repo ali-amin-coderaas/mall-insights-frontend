@@ -9,14 +9,13 @@ import DialogComponent from "../../../shared/components/DialogComponent";
 import { useToast } from "../../../shared/context/ToastContext";
 import useApi from "../../../shared/hooks/useApi";
 import { Links } from "../../../shared/Links";
-import { Data } from "../../../shared/types/ApiResponseInterfaces";
 import { Field } from "../../../shared/types/dataTableInterfaces";
 import { Shop } from "../types/shopInterface";
 
 interface ShopPageHeaderProps {
 	loading: boolean;
-	shop: Data<Shop> | undefined;
-	setShop: React.Dispatch<React.SetStateAction<Data<Shop> | undefined>>;
+	shop: Shop | undefined;
+	setShop: React.Dispatch<React.SetStateAction<Shop | undefined>>;
 	disabled?: boolean;
 	fields?: Field[];
 }
@@ -51,8 +50,8 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 
 	useEffect(() => {
 		// Ensure we set the editable shop when the shop data is available
-		if (shop?.items?.length) {
-			const currentShop = shop.items[0]; // Assuming we are editing the first shop for now
+		if (shop) {
+			const currentShop = shop; // Assuming we are editing the first shop for now
 			setEditableShop(currentShop);
 		}
 	}, [shop]);
@@ -75,12 +74,7 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 
 			// Update the state with the modified shop data
 			if (shop) {
-				setShop({
-					...shop,
-					items: shop.items.map((s) =>
-						s.id === Number(shopId) ? { ...s, ...updatedFields } : s
-					),
-				});
+				setShop(shop);
 			}
 
 			setEditDialogVisible(false);
@@ -114,7 +108,7 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 						<label htmlFor="shop-name" className="text-sm font-regular">
 							shop name
 						</label>
-						<p className="font-bold m-0">{shop?.items[0].name}</p>
+						<p className="font-bold m-0">{shop?.name}</p>
 					</div>
 				)}
 				{loading ? (
@@ -124,7 +118,7 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 						<label htmlFor="shop-type" className="text-sm font-regular">
 							Industry
 						</label>
-						<div>{shop?.items[0].industry}</div>
+						<div>{shop?.industry}</div>
 					</div>
 				)}
 			</div>

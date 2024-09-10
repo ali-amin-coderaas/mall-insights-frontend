@@ -1,5 +1,6 @@
 export class Links {
-	static HomePage = () => "/dashboard";
+	static HomePage = () => "/";
+	static DashboardPage = () => "/dashboard";
 
 	//Account Links
 	static AccountLinks = class {

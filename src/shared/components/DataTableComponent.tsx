@@ -7,24 +7,25 @@ import { Skeleton } from "primereact/skeleton";
 import React, { useState } from "react";
 import { useToast } from "../context/ToastContext";
 import useApi from "../hooks/useApi";
+import { Data } from "../types/ApiResponseInterfaces";
 import { CreateDialogProps, Field } from "../types/dataTableInterfaces";
 import { Column } from "./../types/dataTableInterfaces";
 
-export interface DataTableProps {
+export interface DataTableProps<T> {
 	columns: Column[];
-	createDialog: React.ComponentType<CreateDialogProps>;
+	createDialog: React.ComponentType<CreateDialogProps<T>>;
 	dialogFields: Field[];
 	endpoint: string;
 }
 
-const DataTableComponent: React.FC<DataTableProps> = ({
+const DataTableComponent = <T,>({
 	columns,
 	createDialog: CreateDialog,
 	dialogFields,
 	endpoint,
-}) => {
+}: DataTableProps<T>) => {
 	const {
-		data: items,
+		data,
 		isLoading,
 		currentPage,
 		totalItems,
@@ -33,8 +34,9 @@ const DataTableComponent: React.FC<DataTableProps> = ({
 		setCurrentPage,
 		setPageSize,
 		setSearchQuery,
-		createItem,
-	} = useApi(endpoint, true);
+	} = useApi<Data<T>>(endpoint, true);
+
+	const { createItem } = useApi<T>(endpoint, true);
 
 	const skeletonBodyTemplate = <Skeleton width="100%" />;
 
@@ -55,16 +57,16 @@ const DataTableComponent: React.FC<DataTableProps> = ({
 		setSearchQuery(event.target.value);
 		setCurrentPage(1);
 	};
-	const handleCreateDialogSubmit = (formData: Record<string, string>) => {
-		const dataToSubmit = dialogFields.reduce(
-			(acc: Record<string, string>, field: Field) => {
-				acc[field.name] = formData[field.name] || "";
-				return acc;
-			},
-			{}
-		);
+	const handleCreateDialogSubmit = async (data: T) => {
+		try {
+			await createItem(data);
+		} catch (error) {
+			console.log(
+				"🚀 ~ file: DataTableComponent.tsx:71 ~ handleCreateDialogSubmit ~ error:",
+				error
+			);
+		}
 
-		createItem(dataToSubmit);
 		showToast("success", "Created", "Item created successfully");
 		setDialogVisible(false);
 	};
@@ -107,7 +109,7 @@ const DataTableComponent: React.FC<DataTableProps> = ({
 				<DataTable
 					scrollable
 					scrollHeight="600px"
-					value={items as any}
+					value={data?.items}
 					first={(currentPage - 1) * pageSize}
 					header={header}
 					footer={footer}

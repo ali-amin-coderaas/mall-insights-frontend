@@ -3,17 +3,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Endpoints } from "../../api/Endpoints";
 import useApi from "../../shared/hooks/useApi";
 import { Links } from "../../shared/Links";
-import { APIResponse, Data } from "../../shared/types/ApiResponseInterfaces";
 import ShopPageHeader from "./components/ShopPageHeader";
 import { Shop } from "./types/shopInterface";
 
-type ItemAPIResponse = APIResponse<Shop>;
+// type ItemAPIResponse = APIResponse<Shop>;
 
 const SingleShopPage = () => {
 	const { accountId } = useParams();
 	const { shopId } = useParams();
-	const { isLoading, getItemById } = useApi(Endpoints.shops(Number(accountId)));
-	const [shop, setShop] = useState<ItemAPIResponse | undefined>();
+	const { isLoading, getItemById } = useApi<Shop>(
+		Endpoints.shops(Number(accountId))
+	);
+	const [shop, setShop] = useState<Shop | undefined>(undefined);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -24,7 +25,7 @@ const SingleShopPage = () => {
 					navigate(Links.AccountLinks.SingleAccount(Number(accountId)));
 					throw new Error("Shop not found");
 				}
-				setShop(shop.items[0]);
+				setShop(shop);
 			} catch (error) {
 				throw error;
 			}

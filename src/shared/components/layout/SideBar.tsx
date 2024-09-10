@@ -19,7 +19,7 @@ const SideBar = () => {
 					<ul className="list-none p-0 m-0 overflow-hidden">
 						<li>
 							<Link
-								to={Links.HomePage()}
+								to={Links.DashboardPage()}
 								className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full no-underline"
 							>
 								<i className="pi pi-home mr-2"></i>

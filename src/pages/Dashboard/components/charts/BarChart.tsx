@@ -1,7 +1,12 @@
 import { Chart } from "primereact/chart";
-import React from "react";
 
-const BarChart = ({ data, options }) => {
+
+type BarChartProps = {
+	data?: object 
+	options?: object
+}
+
+const BarChart: React.FC<BarChartProps> = ({ data, options }) => {
 	return (
 		<div className="card">
 			<Chart type="bar" data={data} options={options} />

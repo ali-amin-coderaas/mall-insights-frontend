@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ApiService from "../../../api/ApiService";
 import { Endpoints } from "../../../api/Endpoints";
 import BarChart from "./charts/BarChart";
+import { ShopAnalytics } from "../../Shops/types/shopInterface";
 
 export default function ShopChartStats({ ...rest }) {
 	const [shopStats, setShopStats] = useState({});
@@ -13,10 +14,10 @@ export default function ShopChartStats({ ...rest }) {
 		setLoading(true);
 		try {
 			const apiService = new ApiService(Endpoints.shopsAnalytics());
-			const shopStatsData = await apiService.getAnalytics();
+			const shopStatsData = await apiService.getAnalytics<ShopAnalytics>();
 
-			const shopData = shopStatsData.data.items.reduce(
-				(acc, { industry, count }) => {
+			const shopData = shopStatsData.items.reduce(
+				(acc: { [x: string]: any; }, { industry, count }: any) => {
 					acc[industry] = count;
 					return acc;
 				},
@@ -51,7 +52,8 @@ export default function ShopChartStats({ ...rest }) {
 			},
 			tooltip: {
 				callbacks: {
-					label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw}`,
+					// TODO Fix typing 
+					label: (tooltipItem: any) => `${tooltipItem.label}: ${tooltipItem.raw}`,
 				},
 			},
 		},

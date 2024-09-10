@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ApiService from "../../../api/ApiService";
 import { Endpoints } from "../../../api/Endpoints";
 import PieChart from "./charts/PieChart";
+import { AccountAnalytics } from "../../Accounts/types/accountInterfaces";
 
 export default function AccountChartStats({ ...rest }) {
 	const [accountStats, setAccountStats] = useState({});
@@ -13,10 +14,10 @@ export default function AccountChartStats({ ...rest }) {
 		setLoading(true);
 		try {
 			const apiService = new ApiService(Endpoints.accountsAnalytics());
-			const accountStatsData = await apiService.getAnalytics();
+			const accountStatsData = await apiService.getAnalytics<AccountAnalytics>();
 
-			const accountData = accountStatsData.data.items.reduce(
-				(acc, { accountType, count }) => {
+			const accountData = accountStatsData.items.reduce(
+				(acc: { [key: string]: number }, { accountType, count }) => {
 					acc[accountType] = count;
 					return acc;
 				},
@@ -43,7 +44,8 @@ export default function AccountChartStats({ ...rest }) {
 			},
 			tooltip: {
 				callbacks: {
-					label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw}`,
+					// TODO Fix typing
+					label: (tooltipItem: any) => `${tooltipItem.label}: ${tooltipItem.raw}`,
 				},
 			},
 		},

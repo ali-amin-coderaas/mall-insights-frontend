@@ -12,3 +12,9 @@ export interface Shop {
 	updatedAt: Date; // not editable
 	industry: string;
 }
+
+
+export type ShopAnalytics = {
+	industry: string;
+	count: number;
+}

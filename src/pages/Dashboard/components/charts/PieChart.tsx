@@ -1,7 +1,11 @@
 import { Chart } from "primereact/chart";
-import React from "react";
 
-const PieChart = ({ data, options }) => {
+type pieChartProps = {
+	data?: object;
+	options?: object;
+};
+
+const PieChart: React.FC<pieChartProps> = ({ data, options }) => {
 	return (
 		<div className="card">
 			<Chart type="pie" data={data} options={options} />

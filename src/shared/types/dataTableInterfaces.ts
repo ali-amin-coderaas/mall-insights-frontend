@@ -13,13 +13,14 @@ export interface Field {
 	props?: any;
 }
 
-export interface CreateDialogProps {
-	onSubmit: any;
-	visible: any;
-	onHide: any;
+export interface CreateDialogProps<T> {
+	onSubmit: (data: T) => void;
+	visible: boolean;
+	onHide: () => void;
 	fields?: Field[] | undefined;
 	forUpdate?: boolean | undefined;
-	initialValue?: {} | undefined;
+	initialValue?: T | undefined;
+	children?: React.ReactNode;
 }
 
 type body = (rowData: any) => JSX.Element;

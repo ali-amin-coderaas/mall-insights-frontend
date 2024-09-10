@@ -10,7 +10,7 @@ type UseApiResponse<T> = {
 	error: Error | null;
 	createItem: (data: T) => Promise<Data<T> | undefined>;
 	updateItem: (id: number, data: T) => Promise<Data<T> | undefined>;
-	getItemById: (id: number) => Promise<Data<T> | undefined>;
+	getItemById: (id: number) => Promise<T | undefined>
 	deleteItem: (id: number) => Promise<void>;
 	searchQuery: string;
 	currentPage: number;
@@ -86,7 +86,7 @@ function useApi<T>(
 		}
 	};
 
-	const createItem = async (data: T): Promise<Data<T> | undefined> => {
+	const createItem = async (data: T) => {
 		setIsLoading(true);
 		try {
 			const response = await apiService.create(data);
@@ -102,8 +102,8 @@ function useApi<T>(
 	const getItemById = async (id: number) => {
 		setIsLoading(true);
 		try {
-			const response = await apiService.getById(id);
-			return response.data;
+			const response = await apiService.getById<T>(id);
+			return response.items[0];
 		} catch (error) {
 			setError(error as Error);
 		} finally {
