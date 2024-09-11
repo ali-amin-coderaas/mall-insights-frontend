@@ -10,7 +10,6 @@ import {
 	makePostRequest,
 	makePutRequest,
 } from "./utils/axiosFunctions";
-import { formatSingleItemResponse } from "./utils/responseHelper";
 
 class ApiService {
 	endpoint: string;
@@ -56,7 +55,7 @@ class ApiService {
 		}
 	}
 
-	async softDelete(id: number): Promise<void> {
+	async softDelete(id: number) {
 		try {
 			await makeDeleteRequest(`${this.endpoint}/${id}`);
 		} catch (error) {

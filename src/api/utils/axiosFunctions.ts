@@ -46,7 +46,7 @@ export async function makeDeleteRequest(
 	config?: AxiosRequestConfig
 ): Promise<void> {
 	try {
-		const response = await api.delete(url, config);
+		const response = await api.patch(url, config);
 		return response.data;
 	} catch (error) {
 		throw error;
