@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import AccountsPage from "../pages/Accounts/AccountsPage";
 import AccountPage from "../pages/Accounts/SingleAccountPage";
 import LoginPage from "../pages/Auth/Login/LoginPage";
-import DashboardPage from '../pages/Dashboard/DashboardPage';
+import DashboardPage from "../pages/Dashboard/DashboardPage";
 import ShopPage from "../pages/Shops/SingleShopPage";
 import Root from "../shared/components/layout/Root";
 import { Links } from "../shared/Links";
@@ -15,7 +15,9 @@ const AllRoutes = () => {
 				<Route
 					path={Links.HomePage()}
 					element={
-						<div>Welcome My User</div>
+						<ProtectedRoute>
+							<div>Welcome My User</div>
+						</ProtectedRoute>
 					}
 				/>
 				<Route

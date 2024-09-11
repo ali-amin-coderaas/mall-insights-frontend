@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "primeicons/primeicons.css";
 import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/themes/lara-light-purple/theme.css";
@@ -9,17 +10,21 @@ import { AuthProvider } from "./shared/context/AuthContext.tsx";
 import { ToastProvider } from "./shared/context/ToastContext.tsx";
 import "/node_modules/primeflex/primeflex.css";
 
+const queryClient = new QueryClient();
+
 function App() {
 	return (
-		<PrimeReactProvider>
-			<ToastProvider>
-				<AuthProvider>
-					<BrowserRouter>
-						<AllRoutes />
-					</BrowserRouter>
-				</AuthProvider>
-			</ToastProvider>
-		</PrimeReactProvider>
+		<QueryClientProvider client={queryClient}>
+			<PrimeReactProvider>
+				<ToastProvider>
+					<AuthProvider>
+						<BrowserRouter>
+							<AllRoutes />
+						</BrowserRouter>
+					</AuthProvider>
+				</ToastProvider>
+			</PrimeReactProvider>
+		</QueryClientProvider>
 	);
 }
 

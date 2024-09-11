@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CreateDialogProps } from "../types/dataTableInterfaces";
 
 // Constrain T to be an object where keys are strings and values can be anything
@@ -16,7 +16,7 @@ const DialogComponent = <T extends Record<string, any>>({
 	children,
 	...rest
 }: CreateDialogProps<T>): React.ReactElement => {
-	const [formData, setFormData] = useState<T>(initialValue || {} as T);
+	const [formData, setFormData] = useState<T>(initialValue || ({} as T));
 
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement>,
@@ -26,10 +26,7 @@ const DialogComponent = <T extends Record<string, any>>({
 		setFormData((prev) => ({ ...prev, [fieldName]: val }));
 	};
 
-	const handleDropChange = (
-		e: DropdownChangeEvent,
-		fieldName: string
-	) => {
+	const handleDropChange = (e: DropdownChangeEvent, fieldName: string) => {
 		const val = e.value;
 		setFormData((prev) => ({ ...prev, [fieldName]: val }));
 	};
@@ -44,10 +41,6 @@ const DialogComponent = <T extends Record<string, any>>({
 			<Button label="Save" icon="pi pi-check" onClick={handleSubmit} />
 		</div>
 	);
-
-	useEffect(() => {
-		if (forUpdate && initialValue) setFormData(initialValue);
-	}, [initialValue, forUpdate]);
 
 	return (
 		<Dialog

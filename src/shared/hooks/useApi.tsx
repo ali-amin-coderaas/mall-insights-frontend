@@ -1,4 +1,9 @@
-import { useEffect, useState } from "react";
+import {
+	useMutation,
+	UseMutationResult,
+	useQuery,
+	useQueryClient,
+} from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import ApiService from "../../api/ApiService";
 import { Data } from "../types/ApiResponseInterfaces";
@@ -8,10 +13,29 @@ type UseApiResponse<T> = {
 	data: Data<T> | undefined;
 	isLoading: boolean;
 	error: Error | null;
-	createItem: (data: T) => Promise<T | undefined>;
-	updateItem: (id: number, data: T) => Promise<T | undefined>;
-	getItemById: (id: number) => Promise<T | undefined>;
-	deleteItem: (id: number) => Promise<void>;
+	createItemMutation: UseMutationResult<T, Error, T, unknown>;
+	updateItemMutation: UseMutationResult<
+		T,
+		Error,
+		{
+			id: number;
+			updatedData: T;
+		},
+		unknown
+	>;
+	getItemById: (id: number) => {
+		item: T | undefined;
+		isLoading: boolean;
+		error: Error | null;
+	};
+	deleteItemMutation: UseMutationResult<
+		void,
+		Error,
+		{
+			id: number;
+		},
+		unknown
+	>;
 	searchQuery: string;
 	currentPage: number;
 	totalItems: number | undefined;
@@ -21,15 +45,9 @@ type UseApiResponse<T> = {
 	setSearchQuery: (searchQuery: string) => void;
 };
 
-function useApi<T>(
-	endpoint: string,
-	enableUseEffect = false
-): UseApiResponse<T> {
-	const [data, setData] = useState<Data<T> | undefined>(undefined);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [error, setError] = useState<Error | null>(null);
-	const [totalItems, setTotalItems] = useState<number | undefined>(undefined);
+function useApi<T>(endpoint: string): UseApiResponse<T> {
 	const [searchParams, setSearchParams] = useSearchParams();
+	const queryClient = useQueryClient();
 
 	const apiService = new ApiService(endpoint);
 
@@ -46,96 +64,70 @@ function useApi<T>(
 		});
 	};
 
-	const fetchData = async (
-		page = currentPage,
-		pageSize: number,
-		searchQuery: string,
-		sortBy: string,
-		order: string
-	) => {
-		setIsLoading(true);
-		setError(null); // Reset error state before fetching
+	const queryKey = [
+		endpoint,
+		currentPage,
+		pageSize,
+		searchQuery,
+		sortBy,
+		order,
+	];
+	const queryFn = () =>
+		apiService.getAll<T>(currentPage, pageSize, searchQuery, sortBy, order);
 
-		try {
-			const response = await apiService.getAll<T>(
-				page,
-				pageSize,
-				searchQuery,
-				sortBy,
-				order
-			);
-			setData(response);
-			setTotalItems(response.pagination?.totalItems);
-		} catch (error) {
-			setError(error as Error);
-		} finally {
-			setIsLoading(false);
-		}
+	const { data, isLoading, error } = useQuery<Data<T>>({
+		queryKey,
+		queryFn,
+	});
+
+	const totalItems = data?.pagination?.totalItems;
+
+	// Mutations
+	const createItemMutation = useMutation<T, Error, T>({
+		mutationFn: (newData: T) => apiService.create(newData),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [endpoint] });
+		},
+	});
+
+	const updateItemMutation = useMutation<
+		T,
+		Error,
+		{ id: number; updatedData: T }
+	>({
+		mutationFn: (x) => apiService.update(x.id, x.updatedData),
+
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["data"] });
+		},
+	});
+
+	const getItemById = (id: number) => {
+		const { data, isLoading, error } = useQuery<T>({
+			queryKey: ["data", id],
+			queryFn: () => apiService.getById(id),
+		});
+
+		return { item: data, isLoading, error };
 	};
 
-	const updateItem = async (id: number, data: T) => {
-		setIsLoading(true);
-		try {
-			const updatedItem = await apiService.update(id, data);
-			await fetchData(currentPage, pageSize, searchQuery, sortBy, order);
-			return updatedItem;
-		} catch (error) {
-			setError(error as Error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const createItem = async (data: T) => {
-		setIsLoading(true);
-		try {
-			const response = await apiService.create(data);
-			await fetchData(currentPage, pageSize, searchQuery, sortBy, order);
-			return response;
-		} catch (error) {
-			setError(error as Error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const getItemById = async (id: number) => {
-		setIsLoading(true);
-		try {
-			const item = await apiService.getById<T>(id);
-			return item;
-		} catch (error) {
-			setError(error as Error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const deleteItem = async (id: number) => {
-		setIsLoading(true);
-		try {
-			await apiService.softDelete(id);
-		} catch (error) {
-			setError(error as Error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	if (enableUseEffect) {
-		useEffect(() => {
-			fetchData(currentPage, pageSize, searchQuery, sortBy, order);
-		}, [currentPage, pageSize, searchQuery, sortBy, order]);
-	}
+	const deleteItemMutation = useMutation<void, Error, { id: number }>({
+		mutationFn: (x) => {
+			return apiService.softDelete(x.id);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["data"] });
+		},
+	});
 
 	return {
 		data,
 		isLoading,
 		error,
-		createItem,
-		updateItem,
+		createItemMutation,
+		updateItemMutation,
 		getItemById,
-		deleteItem,
+		deleteItemMutation,
 		searchQuery,
 		currentPage,
 		totalItems,

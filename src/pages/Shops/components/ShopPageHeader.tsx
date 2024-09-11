@@ -16,7 +16,6 @@ interface ShopPageHeaderProps {
 	loading: boolean;
 	shop: Shop | undefined;
 	accountId: number;
-	setShop: React.Dispatch<React.SetStateAction<Shop | undefined>>;
 	disabled?: boolean;
 	fields?: Field[];
 }
@@ -24,7 +23,6 @@ interface ShopPageHeaderProps {
 const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 	loading,
 	shop,
-	setShop,
 	disabled = true,
 	accountId,
 	fields,
@@ -32,7 +30,9 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 }) => {
 	const navigate = useNavigate();
 	const { shopId } = useParams();
-	const { deleteItem, updateItem } = useApi(Endpoints.shops(Number(accountId)));
+	const { deleteItemMutation, updateItemMutation } = useApi<Partial<Shop>>(
+		Endpoints.shops(Number(accountId))
+	);
 	const { showToast } = useToast();
 	const [editDialogVisible, setEditDialogVisible] = useState(false);
 	const [editableShop, setEditableShop] = useState({});
@@ -44,23 +44,16 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 		</div>
 	);
 
-	const shopTypes = [
-		{ label: "Personal", value: "Personal", severity: "primary" },
-		{ label: "Business", value: "Business", severity: "warning" },
-		{ label: "Non-Profit", value: "Non-Profit", severity: "success" },
+	const industryOptions = [
+		{ label: "Retail", value: "retail" },
+		{ label: "Food", value: "food" },
+		{ label: "Technology", value: "technology" },
+		{ label: "Other", value: "other" },
 	];
-
-	useEffect(() => {
-		// Ensure we set the editable shop when the shop data is available
-		if (shop) {
-			const currentShop = shop;
-			setEditableShop(currentShop);
-		}
-	}, [shop]);
 
 	const deleteShop = async () => {
 		try {
-			await deleteItem(Number(shopId));
+			await deleteItemMutation.mutateAsync({ id: Number(shopId) });
 			navigate(Links.AccountLinks.SingleAccount(Number(accountId)));
 			showToast("success", "shop deleted", "Shop deleted successfully");
 		} catch (error) {
@@ -72,12 +65,10 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 		try {
 			const updatedFields = { ...editableShop, ...formData };
 
-			await updateItem(Number(shopId), updatedFields);
-
-			// Update the state with the modified shop data
-			if (shop) {
-				setShop(shop);
-			}
+			await updateItemMutation.mutateAsync({
+				id: Number(shopId),
+				updatedData: updatedFields,
+			});
 
 			setEditDialogVisible(false);
 			showToast("success", "shop updated", "Shop updated successfully");
@@ -149,10 +140,10 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 			type: "text",
 		},
 		{
-			name: "shopType",
-			label: "Type",
+			name: "industry",
+			label: "Industry",
 			type: "dropdown",
-			options: shopTypes,
+			options: industryOptions,
 		},
 	];
 

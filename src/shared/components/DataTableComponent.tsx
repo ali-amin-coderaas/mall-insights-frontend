@@ -34,9 +34,9 @@ const DataTableComponent = <T,>({
 		setCurrentPage,
 		setPageSize,
 		setSearchQuery,
-	} = useApi<Data<T>>(endpoint, true);
+	} = useApi<Data<T>>(endpoint);
 
-	const { createItem } = useApi<T>(endpoint, true);
+	const { createItemMutation } = useApi<T>(endpoint);
 
 	const skeletonBodyTemplate = <Skeleton width="100%" />;
 
@@ -59,7 +59,7 @@ const DataTableComponent = <T,>({
 	};
 	const handleCreateDialogSubmit = async (data: T) => {
 		try {
-			await createItem(data);
+			await createItemMutation.mutateAsync(data);
 		} catch (error) {
 			console.log(
 				"🚀 ~ file: DataTableComponent.tsx:71 ~ handleCreateDialogSubmit ~ error:",

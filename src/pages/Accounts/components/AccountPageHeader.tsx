@@ -3,7 +3,7 @@ import { Card } from "primereact/card";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Skeleton } from "primereact/skeleton";
 import { Tag } from "primereact/tag";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Endpoints } from "../../../api/Endpoints";
 import DialogComponent from "../../../shared/components/DialogComponent";
@@ -15,7 +15,6 @@ import { Account } from "../types/accountInterfaces";
 interface AccountPageHeaderProps {
 	loading: boolean;
 	account: Account | undefined;
-	setAccount: any;
 	disabled?: boolean;
 	fields?: any;
 	[rest: string]: any;
@@ -24,14 +23,15 @@ interface AccountPageHeaderProps {
 const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 	loading,
 	account,
-	setAccount,
 	disabled = true,
 	fields,
 	...rest
 }) => {
 	const navigate = useNavigate();
 	const { accountId } = useParams();
-	const { deleteItem, updateItem } = useApi(Endpoints.accounts());
+	const { deleteItemMutation, updateItemMutation } = useApi<Partial<Account>>(
+		Endpoints.accounts()
+	);
 	const { showToast } = useToast();
 	const [editDialogVisible, setEditDialogVisible] = useState(false);
 	const [editableAccount, setEditableAccount] = useState({});
@@ -49,15 +49,9 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 		{ label: "Non-Profit", value: "Non-Profit", severity: "success" },
 	];
 
-	useEffect(() => {
-		if (account) {
-			setEditableAccount(account);
-		}
-	}, [account]);
-
 	const deleteAccount = async () => {
 		try {
-			await deleteItem(Number(accountId));
+			await deleteItemMutation.mutateAsync({ id: Number(accountId) });
 			navigate(Links.AccountLinks.AccountsPage());
 		} catch (error) {
 			throw error;
@@ -68,9 +62,10 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 		try {
 			const updatedFields = { ...editableAccount, ...formData };
 
-			await updateItem(Number(accountId), updatedFields);
-
-			setAccount({ ...account, ...updatedFields });
+			await updateItemMutation.mutateAsync({
+				id: Number(accountId),
+				updatedData: updatedFields,
+			});
 			setEditDialogVisible(false);
 			showToast("success", "account updated", "account updated successfully");
 		} catch (error) {

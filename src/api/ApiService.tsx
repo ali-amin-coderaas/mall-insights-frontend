@@ -3,7 +3,6 @@ import {
 	Data,
 	SingleItemResponse,
 } from "../shared/types/ApiResponseInterfaces";
-import api from "./api";
 import {
 	makeDeleteRequest,
 	makeGetRequest,
