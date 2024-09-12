@@ -1,10 +1,10 @@
 import { Button } from "primereact/button";
 import { Skeleton } from "primereact/skeleton";
 import { useEffect, useState } from "react";
-import ApiService from "../../../api/ApiService";
+import ApiService from "../../../api/CrudService";
 import { Endpoints } from "../../../api/Endpoints";
-import BarChart from "./charts/BarChart";
 import { ShopAnalytics } from "../../Shops/types/shopInterface";
+import BarChart from "./charts/BarChart";
 
 export default function ShopChartStats({ ...rest }) {
 	const [shopStats, setShopStats] = useState({});
@@ -17,7 +17,7 @@ export default function ShopChartStats({ ...rest }) {
 			const shopStatsData = await apiService.getAnalytics<ShopAnalytics>();
 
 			const shopData = shopStatsData.items.reduce(
-				(acc: { [x: string]: any; }, { industry, count }: any) => {
+				(acc: { [x: string]: any }, { industry, count }: any) => {
 					acc[industry] = count;
 					return acc;
 				},
@@ -52,8 +52,9 @@ export default function ShopChartStats({ ...rest }) {
 			},
 			tooltip: {
 				callbacks: {
-					// TODO Fix typing 
-					label: (tooltipItem: any) => `${tooltipItem.label}: ${tooltipItem.raw}`,
+					// TODO Fix typing
+					label: (tooltipItem: any) =>
+						`${tooltipItem.label}: ${tooltipItem.raw}`,
 				},
 			},
 		},

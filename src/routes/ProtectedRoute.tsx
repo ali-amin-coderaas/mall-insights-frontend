@@ -6,7 +6,7 @@ import { useAuth } from "../shared/hooks/useAuth";
  *
  */
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-	const { isLoggedIn } = useAuth();
+	const { isLoggedIn  } = useAuth();
 
 	return isLoggedIn ? children : <Navigate to="/login" />;
 };

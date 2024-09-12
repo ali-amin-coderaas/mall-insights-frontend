@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import ApiService from "../../api/ApiService";
+import CRUDService from "../../api/CrudService";
 import { Data } from "../types/ApiResponseInterfaces";
-import { UseApiResponse } from "./types/useApiInterfaces";
+import { UseApiResponse } from "../types/useApiInterfaces";
 
 // Define a type for the API response
 
@@ -10,7 +10,7 @@ function useApi<T>(endpoint: string): UseApiResponse<T> {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryClient = useQueryClient();
 
-	const apiService = new ApiService(endpoint);
+	const crudService = new CRUDService(endpoint);
 
 	const currentPage = parseInt(searchParams.get("page") || "1", 10);
 	const pageSize = parseInt(searchParams.get("pageSize") || "10", 10);
@@ -34,7 +34,7 @@ function useApi<T>(endpoint: string): UseApiResponse<T> {
 		order,
 	];
 	const queryFn = () =>
-		apiService.getAll<T>(currentPage, pageSize, searchQuery, sortBy, order);
+		crudService.getAll<T>(currentPage, pageSize, searchQuery, sortBy, order);
 
 	const { data, isLoading, error } = useQuery<Data<T>>({
 		queryKey,
@@ -45,7 +45,7 @@ function useApi<T>(endpoint: string): UseApiResponse<T> {
 
 	// Mutations
 	const createItemMutation = useMutation<T, Error, T>({
-		mutationFn: (newData: T) => apiService.create(newData),
+		mutationFn: (newData: T) => crudService.create(newData),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [endpoint] });
 		},
@@ -56,7 +56,7 @@ function useApi<T>(endpoint: string): UseApiResponse<T> {
 		Error,
 		{ id: number; updatedData: T }
 	>({
-		mutationFn: (x) => apiService.update(x.id, x.updatedData),
+		mutationFn: (x) => crudService.update(x.id, x.updatedData),
 
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [endpoint] });
@@ -66,7 +66,7 @@ function useApi<T>(endpoint: string): UseApiResponse<T> {
 	const getItemById = (id: number) => {
 		const { data, isLoading, error } = useQuery<T>({
 			queryKey: [endpoint, id],
-			queryFn: () => apiService.getById(id),
+			queryFn: () => crudService.getById(id),
 		});
 
 		return { item: data, isLoading, error };
@@ -75,7 +75,7 @@ function useApi<T>(endpoint: string): UseApiResponse<T> {
 	const deleteItemMutation = useMutation<void, Error, { id: number }>({
 		mutationFn: async (x) => {
 			console.log("aaaa");
-			return await apiService.softDelete(x.id);
+			return await crudService.softDelete(x.id);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [endpoint] });

@@ -1,5 +1,5 @@
 import { UseMutationResult } from "@tanstack/react-query";
-import { Data } from "../../types/ApiResponseInterfaces";
+import { Data } from "./ApiResponseInterfaces";
 
 export type UseApiResponse<T> = {
 	data: Data<T> | undefined;

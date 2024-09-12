@@ -1,10 +1,10 @@
 import { Button } from "primereact/button";
 import { Skeleton } from "primereact/skeleton";
 import { useEffect, useState } from "react";
-import ApiService from "../../../api/ApiService";
+import ApiService from "../../../api/CrudService";
 import { Endpoints } from "../../../api/Endpoints";
-import PieChart from "./charts/PieChart";
 import { AccountAnalytics } from "../../Accounts/types/accountInterfaces";
+import PieChart from "./charts/PieChart";
 
 export default function AccountChartStats({ ...rest }) {
 	const [accountStats, setAccountStats] = useState({});
@@ -14,7 +14,8 @@ export default function AccountChartStats({ ...rest }) {
 		setLoading(true);
 		try {
 			const apiService = new ApiService(Endpoints.accountsAnalytics());
-			const accountStatsData = await apiService.getAnalytics<AccountAnalytics>();
+			const accountStatsData =
+				await apiService.getAnalytics<AccountAnalytics>();
 
 			const accountData = accountStatsData.items.reduce(
 				(acc: { [key: string]: number }, { accountType, count }) => {
@@ -45,7 +46,8 @@ export default function AccountChartStats({ ...rest }) {
 			tooltip: {
 				callbacks: {
 					// TODO Fix typing
-					label: (tooltipItem: any) => `${tooltipItem.label}: ${tooltipItem.raw}`,
+					label: (tooltipItem: any) =>
+						`${tooltipItem.label}: ${tooltipItem.raw}`,
 				},
 			},
 		},

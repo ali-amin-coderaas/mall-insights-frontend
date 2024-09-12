@@ -1,6 +1,5 @@
 import Cookies from "js-cookie";
 import { LoginResponseData } from "../shared/types/loginInterfaces";
-import api from "./api";
 import { Endpoints } from "./Endpoints";
 import { makePostRequest } from "./utils/axiosFunctions";
 

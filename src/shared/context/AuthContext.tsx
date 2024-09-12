@@ -1,14 +1,8 @@
 import React, { createContext, ReactNode, useEffect, useState } from "react";
-
-interface AuthContextType {
-	isLoggedIn: boolean;
-	login: (token: string) => void;
-	logout: () => void;
-}
-
-interface AuthProviderProps {
-	children: ReactNode;
-}
+import {
+	AuthContextType,
+	AuthProviderProps,
+} from "../types/authContextInterfaces";
 
 const defaultAuthContextValue: AuthContextType = {
 	isLoggedIn: false,

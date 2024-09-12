@@ -1,4 +1,6 @@
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "primereact/button";
+import { Message } from "primereact/message"; // For displaying error messages
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../../../api/auth";
@@ -14,8 +16,6 @@ export default function LoginForm() {
 	const { login } = useAuth();
 	const navigate = useNavigate();
 
-	const [loading, setLoading] = useState(false);
-
 	const IsFormValid = () => {
 		return validateEmail(email) && password.length >= 8;
 	};
@@ -25,24 +25,26 @@ export default function LoginForm() {
 		setEmail("");
 	};
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		setLoading(true);
-		try {
-			const data: LoginResponseData = await loginUser(email, password);
+	const LoginMutation = useMutation({
+		mutationFn: () => loginUser(email, password),
+		onSuccess: (data: LoginResponseData) => {
 			if (data && data.token) {
 				login(data.token);
 				navigate(Links.AccountLinks.AccountsPage());
 				clearForm();
-				setLoading(false);
 			} else {
 				console.error("Token not received in response:", data);
 			}
-		} catch (error) {
-			console.error(error);
-		}
+		},
 
-		clearForm();
+		onSettled: () => {
+			clearForm();
+		},
+	});
+
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		LoginMutation.mutateAsync();
 	};
 
 	return (
@@ -71,13 +73,14 @@ export default function LoginForm() {
 					setPassword(e.target.value)
 				}
 			/>
+
 			<Button
 				label="Login"
 				icon="pi pi-user"
 				className="w-10rem mx-auto"
 				type="submit"
 				disabled={!IsFormValid()}
-				loading={loading}
+				loading={LoginMutation.isPending}
 			/>
 		</form>
 	);

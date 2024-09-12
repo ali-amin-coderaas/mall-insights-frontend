@@ -1,7 +1,10 @@
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "primereact/button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../../../api/auth";
 import InputField from "../../../../shared/components/InputField";
+import { Links } from "../../../../shared/Links";
 import { validateEmail } from "../../../../shared/utils/ValidateEmail";
 
 const RegisterForm = () => {
@@ -9,7 +12,7 @@ const RegisterForm = () => {
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 
 	const clearForm = () => {
 		setFirstName("");
@@ -22,24 +25,24 @@ const RegisterForm = () => {
 		return firstName && validateEmail(email) && password.length >= 8;
 	};
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		setLoading(true);
-		if (IsFormValid()) {
-			try {
-				const response = await registerUser(
-					firstName,
-					lastName,
-					email,
-					password
-				);
-				console.log(response);
-				setLoading(false);
+	const RegisterMutation = useMutation({
+		mutationFn: () => registerUser(firstName, lastName, email, password),
+		onSuccess: (data) => {
+			if (data && data.token) {
+				navigate(Links.AccountLinks.AccountsPage());
 				clearForm();
-			} catch (error) {
-				console.error(error);
+			} else {
+				console.error("Token not received in response:", data);
 			}
-		}
+		},
+		onSettled: () => {
+			clearForm();
+		},
+	});
+
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		RegisterMutation.mutateAsync();
 		clearForm();
 	};
 	return (
@@ -88,7 +91,7 @@ const RegisterForm = () => {
 				className="w-10rem mx-auto"
 				type="submit"
 				disabled={!IsFormValid()}
-				loading={loading}
+				loading={RegisterMutation.isPending}
 			/>
 		</form>
 	);

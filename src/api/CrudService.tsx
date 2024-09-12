@@ -10,7 +10,7 @@ import {
 	makePutRequest,
 } from "./utils/axiosFunctions";
 
-class ApiService {
+class CRUDService {
 	endpoint: string;
 
 	constructor(endpoint: string) {
@@ -42,12 +42,12 @@ class ApiService {
 
 	async getById<T>(id: number): Promise<T> {
 		try {
-			// Pass in the type `SingleItemResponse<T>` for the expected response structure
+			// Pass in the type SingleItemResponse<T> for the expected response structure
 			const response = await makeGetRequest<SingleItemResponse<T>>(
 				`${this.endpoint}/${id}`
 			);
 
-			// Return the `items` field from the response data
+			// Return the items field from the response data
 			return response.data.items;
 		} catch (error) {
 			throw error;
@@ -96,7 +96,7 @@ class ApiService {
 		} catch (error: any) {
 			console.error("Error fetching account stats:", error);
 			throw new Error(
-				`Failed to fetch account stats: ${
+				`				Failed to fetch account stats: ${
 					error.response?.data?.message || error.message
 				}`
 			);
@@ -104,4 +104,4 @@ class ApiService {
 	}
 }
 
-export default ApiService;
+export default CRUDService;

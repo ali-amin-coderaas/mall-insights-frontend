@@ -7,6 +7,7 @@ import ShopPage from "../pages/Shops/SingleShopPage";
 import Root from "../shared/components/layout/Root";
 import { Links } from "../shared/Links";
 import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
 
 const AllRoutes = () => {
 	return (
@@ -28,7 +29,14 @@ const AllRoutes = () => {
 						</ProtectedRoute>
 					}
 				/>
-				<Route path={Links.AuthLinks.LoginPage()} element={<LoginPage />} />
+				<Route
+					path={Links.AuthLinks.LoginPage()}
+					element={
+						<PublicRoute>
+							<LoginPage />
+						</PublicRoute>
+					}
+				/>
 
 				<Route path={Links.AccountLinks.AccountsPage()}>
 					<Route
