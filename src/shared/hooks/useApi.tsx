@@ -1,49 +1,10 @@
-import {
-	useMutation,
-	UseMutationResult,
-	useQuery,
-	useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import ApiService from "../../api/ApiService";
 import { Data } from "../types/ApiResponseInterfaces";
+import { UseApiResponse } from "./types/useApiInterfaces";
 
 // Define a type for the API response
-type UseApiResponse<T> = {
-	data: Data<T> | undefined;
-	isLoading: boolean;
-	error: Error | null;
-	createItemMutation: UseMutationResult<T, Error, T, unknown>;
-	updateItemMutation: UseMutationResult<
-		T,
-		Error,
-		{
-			id: number;
-			updatedData: T;
-		},
-		unknown
-	>;
-	getItemById: (id: number) => {
-		item: T | undefined;
-		isLoading: boolean;
-		error: Error | null;
-	};
-	deleteItemMutation: UseMutationResult<
-		void,
-		Error,
-		{
-			id: number;
-		},
-		unknown
-	>;
-	searchQuery: string;
-	currentPage: number;
-	totalItems: number | undefined;
-	pageSize: number;
-	setCurrentPage: (page: number) => void;
-	setPageSize: (pageSize: number) => void;
-	setSearchQuery: (searchQuery: string) => void;
-};
 
 function useApi<T>(endpoint: string): UseApiResponse<T> {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -98,13 +59,13 @@ function useApi<T>(endpoint: string): UseApiResponse<T> {
 		mutationFn: (x) => apiService.update(x.id, x.updatedData),
 
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["data"] });
+			queryClient.invalidateQueries({ queryKey: [endpoint] });
 		},
 	});
 
 	const getItemById = (id: number) => {
 		const { data, isLoading, error } = useQuery<T>({
-			queryKey: ["data", id],
+			queryKey: [endpoint, id],
 			queryFn: () => apiService.getById(id),
 		});
 
@@ -112,11 +73,12 @@ function useApi<T>(endpoint: string): UseApiResponse<T> {
 	};
 
 	const deleteItemMutation = useMutation<void, Error, { id: number }>({
-		mutationFn: (x) => {
-			return apiService.softDelete(x.id);
+		mutationFn: async (x) => {
+			console.log("aaaa");
+			return await apiService.softDelete(x.id);
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["data"] });
+			queryClient.invalidateQueries({ queryKey: [endpoint] });
 		},
 	});
 

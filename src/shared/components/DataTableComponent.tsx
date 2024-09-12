@@ -127,6 +127,7 @@ const DataTableComponent = <T,>({
 			</div>
 			{CreateDialog && (
 				<CreateDialog
+					isLoading={createItemMutation.isPending}
 					fields={dialogFields}
 					visible={dialogVisible}
 					onHide={handleDialogHide}

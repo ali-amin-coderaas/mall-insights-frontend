@@ -14,6 +14,7 @@ const DialogComponent = <T extends Record<string, any>>({
 	forUpdate,
 	initialValue,
 	children,
+	isLoading,
 	...rest
 }: CreateDialogProps<T>): React.ReactElement => {
 	const [formData, setFormData] = useState<T>(initialValue || ({} as T));
@@ -37,8 +38,19 @@ const DialogComponent = <T extends Record<string, any>>({
 
 	const dialogFooter = (
 		<div className="flex justify-content-end">
-			<Button label="Cancel" icon="pi pi-times" onClick={onHide} outlined />
-			<Button label="Save" icon="pi pi-check" onClick={handleSubmit} />
+			<Button
+				label="Cancel"
+				icon="pi pi-times"
+				onClick={onHide}
+				outlined
+				disabled={isLoading}
+			/>
+			<Button
+				label="Save"
+				icon="pi pi-check"
+				onClick={handleSubmit}
+				loading={isLoading}
+			/>
 		</div>
 	);
 

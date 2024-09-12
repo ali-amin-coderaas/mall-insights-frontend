@@ -44,9 +44,9 @@ export async function makePutRequest<T>(
 export async function makeDeleteRequest(
 	url: string,
 	config?: AxiosRequestConfig
-): Promise<void> {
+): Promise<unknown> {
 	try {
-		const response = await api.patch(url, config);
+		const response = await api.delete(url, config);
 		return response.data;
 	} catch (error) {
 		throw error;

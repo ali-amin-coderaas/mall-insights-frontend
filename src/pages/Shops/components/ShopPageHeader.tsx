@@ -30,9 +30,9 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 }) => {
 	const navigate = useNavigate();
 	const { shopId } = useParams();
-	const { deleteItemMutation, updateItemMutation } = useApi<Partial<Shop>>(
-		Endpoints.shops(Number(accountId))
-	);
+	const { deleteItemMutation, updateItemMutation, isLoading } = useApi<
+		Partial<Shop>
+	>(Endpoints.shops(Number(accountId)));
 	const { showToast } = useToast();
 	const [editDialogVisible, setEditDialogVisible] = useState(false);
 	const [editableShop, setEditableShop] = useState({});
@@ -53,9 +53,10 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 
 	const deleteShop = async () => {
 		try {
+			console.log("bbbbbbb");
+
 			await deleteItemMutation.mutateAsync({ id: Number(shopId) });
 			navigate(Links.AccountLinks.SingleAccount(Number(accountId)));
-			showToast("success", "shop deleted", "Shop deleted successfully");
 		} catch (error) {
 			showToast("error", "Delete failed", "Unable to delete shop");
 		}
@@ -152,6 +153,7 @@ const ShopPageHeader: React.FC<ShopPageHeaderProps> = ({
 			<Card title={title}></Card>
 
 			<DialogComponent
+				isLoading={updateItemMutation.isPending}
 				onSubmit={editShop}
 				visible={editDialogVisible}
 				fields={updateFields}

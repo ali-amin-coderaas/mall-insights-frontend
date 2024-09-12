@@ -54,9 +54,13 @@ class ApiService {
 		}
 	}
 
-	async softDelete(id: number) {
+	async create<T>(data: T): Promise<T> {
 		try {
-			await makeDeleteRequest(`${this.endpoint}/${id}`);
+			const response = await makePostRequest<SingleItemResponse<T>>(
+				this.endpoint,
+				data
+			);
+			return response.data.items;
 		} catch (error) {
 			throw error;
 		}
@@ -74,14 +78,13 @@ class ApiService {
 		}
 	}
 
-	async create<T>(data: T): Promise<T> {
+	async softDelete(id: number) {
+		console.log(`Attempting to soft delete item with id ${id}`);
 		try {
-			const response = await makePostRequest<SingleItemResponse<T>>(
-				this.endpoint,
-				data
-			);
-			return response.data.items;
+			await makeDeleteRequest(`${this.endpoint}/${id}`);
+			console.log(`Successfully soft deleted item with id ${id}`);
 		} catch (error) {
+			console.error(`Error soft deleting item with id ${id}`, error);
 			throw error;
 		}
 	}

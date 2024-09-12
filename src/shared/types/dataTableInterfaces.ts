@@ -16,6 +16,7 @@ export interface Field {
 export interface CreateDialogProps<T> {
 	onSubmit: (data: T) => void;
 	visible: boolean;
+	isLoading: boolean;
 	onHide: () => void;
 	fields?: Field[] | undefined;
 	forUpdate?: boolean | undefined;

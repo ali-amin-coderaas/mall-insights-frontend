@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Endpoints } from "../../api/Endpoints";
 import useApi from "../../shared/hooks/useApi";
@@ -9,16 +10,19 @@ const SingleShopPage = () => {
 	const { accountId } = useParams();
 	const { shopId } = useParams();
 	const endpoint = Endpoints.shops(Number(accountId));
+	const navigate = useNavigate();
 
 	const { getItemById } = useApi<Shop>(endpoint);
 
 	const { error, isLoading, item: shop } = getItemById(Number(shopId));
-	const navigate = useNavigate();
 
-	if (error) {
-		navigate(Links.AccountLinks.SingleAccount(Number(accountId)));
-		throw error;
-	}
+	useEffect(() => {
+		if (error) {
+			navigate(Links.AccountLinks.SingleAccount(Number(accountId)));
+			throw error;
+		}
+	}, [accountId]);
+
 	return (
 		!isLoading && (
 			<ShopPageHeader
