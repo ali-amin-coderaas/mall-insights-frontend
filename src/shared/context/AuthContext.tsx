@@ -1,9 +1,9 @@
-import React, { createContext, ReactNode, useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import React, { createContext, useEffect, useState } from "react";
 import {
 	AuthContextType,
 	AuthProviderProps,
 } from "../types/authContextInterfaces";
-
 const defaultAuthContextValue: AuthContextType = {
 	isLoggedIn: false,
 	login: () => {},
@@ -16,24 +16,24 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-		const token = localStorage.getItem("jwtToken");
+		const token = Cookies.get("jwtToken");
 		return token !== null;
 	});
 
 	useEffect(() => {
-		const token = localStorage.getItem("jwtToken");
+		const token = Cookies.get("jwtToken");
 		if (token) {
 			setIsLoggedIn(true);
 		}
 	}, []);
 
 	const login = (token: string) => {
-		localStorage.setItem("jwtToken", token);
+		Cookies.set("jwtToken", token);
 		setIsLoggedIn(true);
 	};
 
 	const logout = () => {
-		localStorage.removeItem("jwtToken");
+		Cookies.remove("jwtToken");
 		setIsLoggedIn(false);
 	};
 
