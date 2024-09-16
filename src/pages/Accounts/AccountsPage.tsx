@@ -1,10 +1,10 @@
-import AccountsTable from "./components/AccountsTable";
+import AccountsView from "./views/AccountsView";
 
 const AccountsPage = () => {
 	return (
 		<div>
 			<h1>Accounts</h1>
-			<AccountsTable />
+			<AccountsView />
 		</div>
 	);
 };

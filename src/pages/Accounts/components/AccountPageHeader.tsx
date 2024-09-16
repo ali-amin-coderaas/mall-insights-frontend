@@ -152,6 +152,7 @@ const AccountPageHeader: React.FC<AccountPageHeaderProps> = ({
 			<DialogComponent
 				onSubmit={editAccount}
 				visible={editDialogVisible}
+				isLoading={updateItemMutation.isPending}
 				fields={updateFields}
 				forUpdate
 				initialValue={account}

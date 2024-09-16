@@ -2,8 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Endpoints } from "../../api/Endpoints";
 import useApi from "../../shared/hooks/useApi";
 import AccountPageHeader from "./components/AccountPageHeader";
-import ShopsTable from "./components/ShopsTable";
 import { Account } from "./types/accountInterfaces";
+import ShopsView from "./views/ShopsView";
 
 const SingleAccountPage = () => {
 	const { accountId } = useParams();
@@ -26,7 +26,7 @@ const SingleAccountPage = () => {
 				fields={["name"]}
 				className="w-full"
 			/>
-			<ShopsTable className="w-full" accountId={Number(accountId)} />
+			<ShopsView accountId={Number(accountId)} className="w-full" />
 		</div>
 	);
 };

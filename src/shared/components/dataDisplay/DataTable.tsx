@@ -1,15 +1,18 @@
 import { Button } from "primereact/button";
 import { Column as PrimeColumn } from "primereact/column";
-import { DataTable } from "primereact/datatable";
+import { DataTable as PrimeDataTable } from "primereact/datatable";
 import { InputText } from "primereact/inputtext";
 import { Paginator } from "primereact/paginator";
 import { Skeleton } from "primereact/skeleton";
 import React, { useState } from "react";
-import { useToast } from "../context/ToastContext";
-import useApi from "../hooks/useApi";
-import { Data } from "../types/ApiResponseInterfaces";
-import { CreateDialogProps, Field } from "../types/dataTableInterfaces";
-import { Column } from "./../types/dataTableInterfaces";
+import { useToast } from "../../context/ToastContext";
+import useApi from "../../hooks/useApi";
+import { Data } from "../../types/ApiResponseInterfaces";
+import {
+	Column,
+	CreateDialogProps,
+	Field,
+} from "../../types/dataTableInterfaces";
 
 export interface DataTableProps<T> {
 	columns: Column[];
@@ -18,7 +21,7 @@ export interface DataTableProps<T> {
 	endpoint: string;
 }
 
-const DataTableComponent = <T,>({
+const DataTable = <T,>({
 	columns,
 	createDialog: CreateDialog,
 	dialogFields,
@@ -106,7 +109,7 @@ const DataTableComponent = <T,>({
 	return (
 		<div>
 			<div className="card">
-				<DataTable
+				<PrimeDataTable
 					scrollable
 					scrollHeight="600px"
 					value={data?.items}
@@ -123,7 +126,7 @@ const DataTableComponent = <T,>({
 							body={isLoading ? () => skeletonBodyTemplate : col.body}
 						/>
 					))}
-				</DataTable>
+				</PrimeDataTable>
 			</div>
 			{CreateDialog && (
 				<CreateDialog
@@ -138,4 +141,4 @@ const DataTableComponent = <T,>({
 	);
 };
 
-export default DataTableComponent;
+export default DataTable;

@@ -1,73 +1,73 @@
 {
-  "status": {
-      "code": 200,
-      "message": "OK",
-      "timestamp": "2024-09-06T18:32:30.099Z",
-      "path": "/accounts?page=1&pageSize=5&q=&sortBy=createdAt&order=desc",
-      "method": "GET",
-      "requestId": "4c214bba-7894-4a2b-bdb6-ce3d93477635"
-  },
-  "data": {
-      "items": [
-          {
-              "id": 14,
-              "name": "testing",
-              "isActive": 1,
-              "createdAt": "2024-06-18T08:15:30.000Z",
-              "updatedAt": "2024-09-04T08:01:28.000Z",
-              "accountType": "Business",
-              "shopCount": 2
-          },
-          {
-              "id": 13,
-              "name": "Healthy Living",
-              "isActive": 1,
-              "createdAt": "2024-05-25T11:20:00.000Z",
-              "updatedAt": "2024-05-25T11:20:00.000Z",
-              "accountType": "Non-Profit",
-              "shopCount": 2
-          },
-          {
-              "id": 12,
-              "name": "John Doe",
-              "isActive": 1,
-              "createdAt": "2024-03-20T10:34:56.000Z",
-              "updatedAt": "2024-04-10T06:45:00.000Z",
-              "accountType": "Personal",
-              "shopCount": 2
-          },
-          {
-              "id": 11,
-              "name": "Tech Innovators",
-              "isActive": 1,
-              "createdAt": "2024-02-15T08:45:30.000Z",
-              "updatedAt": "2024-02-15T08:45:30.000Z",
-              "accountType": "Business",
-              "shopCount": 2
-          },
-          {
-              "id": 10,
-              "name": "Retail Corp",
-              "isActive": 1,
-              "createdAt": "2024-01-10T06:23:45.000Z",
-              "updatedAt": "2024-01-10T06:23:45.000Z",
-              "accountType": "Business",
-              "shopCount": 4
-          }
-      ],
-      "pagination": {
-          "currentPage": 1,
-          "pageSize": 5,
-          "totalItems": 14,
-          "totalPages": 3
-      },
-      "links": null
-  },
-  "error": null,
-  "meta": {
-      "version": "1.0.0",
-      "api": "Fetch Accounts API",
-      "environment": "development",
-      "executionTime": "0ms"
-  }
+	"status": {
+		"code": 200,
+		"message": "OK",
+		"timestamp": "2024-09-06T18:32:30.099Z",
+		"path": "/accounts?page=1&pageSize=5&q=&sortBy=createdAt&order=desc",
+		"method": "GET",
+		"requestId": "4c214bba-7894-4a2b-bdb6-ce3d93477635"
+	},
+	"data": {
+		"items": [
+			{
+				"id": 14,
+				"name": "testing",
+				"isActive": 1,
+				"createdAt": "2024-06-18T08:15:30.000Z",
+				"updatedAt": "2024-09-04T08:01:28.000Z",
+				"accountType": "Business",
+				"shopCount": 2
+			},
+			{
+				"id": 13,
+				"name": "Healthy Living",
+				"isActive": 1,
+				"createdAt": "2024-05-25T11:20:00.000Z",
+				"updatedAt": "2024-05-25T11:20:00.000Z",
+				"accountType": "Non-Profit",
+				"shopCount": 2
+			},
+			{
+				"id": 12,
+				"name": "John Doe",
+				"isActive": 1,
+				"createdAt": "2024-03-20T10:34:56.000Z",
+				"updatedAt": "2024-04-10T06:45:00.000Z",
+				"accountType": "Personal",
+				"shopCount": 2
+			},
+			{
+				"id": 11,
+				"name": "Tech Innovators",
+				"isActive": 1,
+				"createdAt": "2024-02-15T08:45:30.000Z",
+				"updatedAt": "2024-02-15T08:45:30.000Z",
+				"accountType": "Business",
+				"shopCount": 2
+			},
+			{
+				"id": 10,
+				"name": "Retail Corp",
+				"isActive": 1,
+				"createdAt": "2024-01-10T06:23:45.000Z",
+				"updatedAt": "2024-01-10T06:23:45.000Z",
+				"accountType": "Business",
+				"shopCount": 4
+			}
+		],
+		"pagination": {
+			"currentPage": 1,
+			"pageSize": 5,
+			"totalItems": 14,
+			"totalPages": 3
+		},
+		"links": null
+	},
+	"error": null,
+	"meta": {
+		"version": "1.0.0",
+		"api": "Fetch Accounts API",
+		"environment": "development",
+		"executionTime": "0ms"
+	}
 }

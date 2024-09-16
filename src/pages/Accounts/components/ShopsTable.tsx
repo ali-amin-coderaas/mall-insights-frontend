@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Endpoints } from "../../../api/Endpoints";
-import DataTableComponent from "../../../shared/components/DataTableComponent";
+import DataTable from "../../../shared/components/dataDisplay/DataTable";
 import DialogComponent from "../../../shared/components/DialogComponent";
 import { Column, Field } from "../../../shared/types/dataTableInterfaces";
 import { formatTimeStamp } from "../../../shared/utils/FormatTimeStamp";
@@ -70,7 +70,7 @@ const ShopsTable: React.FC<ShopsTableProps> = ({ accountId, ...rest }) => {
 
 	return (
 		<div {...rest}>
-			<DataTableComponent
+			<DataTable
 				endpoint={endpoint}
 				columns={columns}
 				createDialog={DialogComponent}

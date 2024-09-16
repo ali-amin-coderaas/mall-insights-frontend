@@ -7,6 +7,7 @@ export type Account = {
 	createdAt: Date;
 	updatedAt: Date;
 	accountType: string;
+	image?: string;
 };
 
 export type AccountAnalytics = {
