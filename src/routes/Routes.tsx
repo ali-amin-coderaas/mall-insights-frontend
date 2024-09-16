@@ -8,6 +8,7 @@ import Root from "../shared/components/layout/Root";
 import { Links } from "../shared/Links";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import RegisterPage from "../pages/Auth/Register/RegisterPage";
 
 const AllRoutes = () => {
 	return (
@@ -34,6 +35,14 @@ const AllRoutes = () => {
 					element={
 						<PublicRoute>
 							<LoginPage />
+						</PublicRoute>
+					}
+				/>
+				<Route
+					path={Links.AuthLinks.RegisterPage()}
+					element={
+						<PublicRoute>
+							<RegisterPage />
 						</PublicRoute>
 					}
 				/>

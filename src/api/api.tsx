@@ -2,8 +2,8 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
 const api = axios.create({
-	// baseURL: "https://recipes-expressjs-i6wd.onrender.com",
-	baseURL: "http://localhost:8080",
+	baseURL: "https://recipes-expressjs-i6wd.onrender.com",
+	// baseURL: "http://localhost:8080",
 
 	headers: {
 		"Content-Type": "application/json",
